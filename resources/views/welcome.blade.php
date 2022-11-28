@@ -10,26 +10,15 @@ require '/home/cruzpach/Documents/dev/fDashboard/public/edgar-data-processor.php
 $path = '/home/cruzpach/Documents/dev/fDashboard/public/fillings/002488/10K/002488_10K_1.xlsx';
 $path2 = '/home/cruzpach/Documents/dev/fDashboard/public/fillings/002488/10Q/002488_10Q_1.xlsx';
 
+//TODO
+// EXTRACT FILLING DATE FROM SEARCH RESULTS AND ADD IT TO FILLING NAME!
+
 $r = new EDGARDataRetriever();
 $p = new EDGARDataProcessor();
 
-$results = $r->getEdgarData('', '078003', '', 20010101, 20221231);
-// dd($p->getFillingsListByCompany($results));
 
-function populateCIKDatabase()
-{
-    $cikWithoutTicker = "https://www.sec.gov/Archives/edgar/cik-lookup-data.txt";
-    $cikWithTicker = "https://www.sec.gov/files/company_tickers.json";
+$results = $p->getFillingsListByCompany('078003');
+// Apple    320193
+// AMD      002488
+// PFE      078003
 
-    $url = file_get_contents($cikWithTicker);
-    $decoded_url = json_decode($url, true);
-    $dde = [];
-
-    foreach ($decoded_url as $url)
-    {
-        $dde[] = $url['ticker'];
-    }
-}
-
-dd($dde);
-// dd($decoded_url[3505]['ticker']);

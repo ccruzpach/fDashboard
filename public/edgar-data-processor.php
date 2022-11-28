@@ -20,16 +20,14 @@ class EDGARDataProcessor
         return $name;
     }
 
-    public function extractExcelTables(string $path) 
+    public function extractExcelTables(string $path)
     {
         $tables = [];
 
-        if ( $xlsx = @SimpleXLSX::parse($path) ) 
-        {
-            $sheets=$xlsx->sheetNames();
+        if ($xlsx = @SimpleXLSX::parse($path)) {
+            $sheets = $xlsx->sheetNames();
 
-            for ($i = 0; $i < count($sheets); $i++)
-            {
+            for ($i = 0; $i < count($sheets); $i++) {
                 $fillingSection = $xlsx->rows($i);
                 $name = $fillingSection[0][0];
                 $id = $this->createID($name);
@@ -40,9 +38,8 @@ class EDGARDataProcessor
 
                 $rows = [];
 
-                foreach ($fillingSection as $row)
-                {
-                    $rows[] = '<tr><td>'.implode('</td><td>', $row ).'</td></tr>';
+                foreach ($fillingSection as $row) {
+                    $rows[] = '<tr><td>' . implode('</td><td>', $row) . '</td></tr>';
                 }
 
                 $tableString = implode($rows);
@@ -50,7 +47,6 @@ class EDGARDataProcessor
             }
 
             return $tables;
-
         } else {
             echo SimpleXLSX::parseError();
         }
@@ -58,34 +54,59 @@ class EDGARDataProcessor
         return $tables;
     }
 
-    public function getFillingsListByCompany($EDGARData)
-    {
+    public function getFillingsListByCompany($cik)
+    {       
+        $edgarData = (new EDGARDataRetriever())->getEdgarData('', $cik, '', 20000101);
+
         $dom = new DOMDocument();
-        @ $dom->loadHTML($EDGARData);
-
-        $elements = $dom->getElementsByTagName('tr');
-        $tableElements = [];
-
-        foreach ($elements as $element)
+        $dom->validateOnParse = true;
+        @$dom->loadHTML($edgarData);
+        
+        $tRows = $dom->getElementsByTagName('tr');
+        $fillingList = [];
+        $tDocLinks = $dom->getElementsByTagName('a');
+        $fillingLinks = [];
+        
+        foreach ($tDocLinks as $link)
         {
-            $element = trim($element->textContent);
-            $element = explode("\n", $element);
+            $l = $link->getAttribute('href');
+            (preg_match('(Archives/edgar/data)', $l)) ? $fillingLinks[] = 'https://www.sec.gov' . $l : '';
+        }
+        
+        foreach ($tRows as $row)
+        {
+            $row = trim($row->textContent);
+            $row = explode("\n", $row);    
             $tempArray = [];
-
-            for ($i = 0; $i < count($element); $i++)
+        
+            for ($i = 0; $i < count($row); $i++) 
             {
                 if (($i == 0)
                     or
-                    ($i == 3 or $i == 4) and preg_match("/\s\d{4}-\d{2}-\d{2}/", $element[$i]))
+                    ($i == 3 or $i == 4) and preg_match("/\s\d{4}-\d{2}-\d{2}/", $row[$i]))
                 {
-                    $tempArray[] = trim($element[$i]);
+                    $tempArray[] = trim($row[$i]);
                 }
             }
-            $tableElements[] = implode(' | ', $tempArray);
+            $fillingList[] = implode(' | ', $tempArray);
         }
-        $tableElements = array_splice($tableElements, 5);
-        array_pop($tableElements);
+        
+        return array_combine(array_slice($fillingList, 5, -1), $fillingLinks);
+    }
 
-        return $tableElements;
+    public function populateCIKDatabase()
+    {
+        $cikWithoutTicker = "https://www.sec.gov/Archives/edgar/cik-lookup-data.txt";
+        $cikWithTicker = "https://www.sec.gov/files/company_tickers.json";
+
+        $url = file_get_contents($cikWithTicker);
+        $decoded_url = json_decode($url, true);
+        $dde = [];
+
+        foreach ($decoded_url as $url) {
+            $dde[] = $url['ticker'];
+        }
     }
 }
+
+// $results = $p->getFillingsListByCompany('078003');
