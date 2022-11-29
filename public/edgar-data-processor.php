@@ -106,7 +106,7 @@ class EDGARDataProcessor
         foreach ($decoded_url as $url) {
             $dde[] = $url['ticker'];           
         }
-        return $dde;
+        return $decoded_url;
     }
 }
 
