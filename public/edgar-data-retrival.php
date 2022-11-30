@@ -13,7 +13,7 @@ class EDGARDataRetriever
     public $fillingType;
     public $fromDate;
 
-    public function getEdgarData(string $urlString, string $cikNumber = null, $fillingType = null, $fromDate = null) 
+    public function createUrl(string $cikNumber, $fillingType, $fromDate)
     {
         // For Loop for readability?????
         switch (strlen($cikNumber)) {
@@ -34,9 +34,11 @@ class EDGARDataRetriever
                 break;
         }
 
-        $url = "";
-        ($urlString) ? $url = $urlString : $url = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=$cikNumber&type=$fillingType&datea=$fromDate&start=&output=html&count=100&owner=excluded";
+        return "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=$cikNumber&type=$fillingType&datea=$fromDate&start=&output=html&count=100&owner=excluded";
+    }
 
+    public function getEdgarData(string $url) 
+    {
         $agent = "Mozilla/5.0 (X11; Linux x86_64; rv:60.0)";
 
         $ch = curl_init();
@@ -46,7 +48,7 @@ class EDGARDataRetriever
 
         return curl_exec($ch);
     }
-
+    //TODO: Split function into base function, and one for each data to be handled (CIK & xls)
     public function getSeachResulsURLs(string $htmlSource, bool $isExcelFile = false)
     {
         $dom = new DOMDocument();
@@ -58,7 +60,7 @@ class EDGARDataRetriever
         foreach ($links as $link)
         {
             $link = $link->getAttribute('href');
-
+            // TODO: use regular expression for CIK case insensitive
             if ((preg_match('(CIK|cik)', $link) and preg_match('(action=view)', $link) and !preg_match('(output=atom)', $link))
                 or
                 ($isExcelFile and preg_match('(.xls)', $link)))
@@ -88,20 +90,24 @@ class EDGARDataRetriever
     public function downloadExcelFillings(string $cikNumber, string $fillingType, int $fromDate, $agent = "Mozilla/5.0 (X11; Linux x86_64; rv:60.0)")
     {
         $modFillingType = str_replace("-", "", $fillingType);
-        $counter = 1;
-        $path = "./fillings/$cikNumber/$modFillingType";
-
+        
+        //TODO: set this into a configuration fiule  
+        $path = "./fillings/$cikNumber/$modFillingType"; 
         File::ensureDirectoryExists($path);
         
         $links = $this->getFillingsUrls($cikNumber, $fillingType, $fromDate);
-
+        //TODO: Change counter for filling date.
+        $counter = 1;
         foreach ($links as $link)
         {
+            //TODO: Extract to function "downloadFile"
             set_time_limit(0);            
-            $fp = fopen (public_path('fillings/') . "$cikNumber/$modFillingType/$cikNumber" . "_" . "$modFillingType" . "_" . "$counter.xlsx", 'w+');
+            
             $ch = curl_init(str_replace(" ","%20", $link));
             curl_setopt($ch, CURLOPT_TIMEOUT, 600);
             curl_setopt($ch, CURLOPT_USERAGENT, $agent); // THIS MESSES UP THE XLSX FILE
+
+            $fp = fopen (public_path('fillings/') . "$cikNumber/$modFillingType/$cikNumber" . "_" . "$modFillingType" . "_" . "$counter.xlsx", 'w+');
             curl_setopt($ch, CURLOPT_FILE, $fp); 
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             curl_exec($ch); 

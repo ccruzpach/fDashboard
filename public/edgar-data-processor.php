@@ -20,6 +20,7 @@ class EDGARDataProcessor
         return $name;
     }
 
+    //CONSIDER: SEPARATING PARSING THE XLS AND CONSTRUCTING THE HTML
     public function extractExcelTables(string $path)
     {
         $tables = [];
@@ -94,6 +95,7 @@ class EDGARDataProcessor
         return array_combine(array_slice($fillingList, 5, -1), $fillingLinks);
     }
 
+    //TODO: Finish this function
     public function populateCIKDatabase()
     {
         $cikWithoutTicker = "https://www.sec.gov/Archives/edgar/cik-lookup-data.txt";
@@ -110,4 +112,6 @@ class EDGARDataProcessor
     }
 }
 
+// $p = new EDGARDataProcessor();
+// $results = $p->extractExcelTables($results);
 // $results = $p->getFillingsListByCompany('078003');

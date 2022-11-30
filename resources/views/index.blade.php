@@ -5,15 +5,46 @@ use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Support\Facades\Storage;
 
-require '/home/cruzpach/Documents/dev/fDashboard/public/edgar-data-retrival.php';
+//TODO: RELATIVE PATH is better;
 require '/home/cruzpach/Documents/dev/fDashboard/public/edgar-data-processor.php';
+require '/home/cruzpach/Documents/dev/fDashboard/public/edgar-data-retrival.php';
 
-//TODO
-// EXTRACT FILLING DATE FROM SEARCH RESULTS AND ADD IT TO FILLING NAME!
+// TODO: EXTRACT FILLING DATE FROM SEARCH RESULTS AND ADD IT TO FILLING NAME!
 
+//TODO: Create Views for each example
+$r = new EDGARDataRetriever();
+$url = $r->createURL('0320193', '10-K', 20010101);
+$results = $r->getEdgarData($url);
+// $results = $r->getSeachResulsURLs($results);
+// $results = $r->getFillingsUrls('320193', '8-K', 20050101);
+// $r->downloadExcelFillings('078003', '10-K', 20050101);
+
+//TO GET A LIST OF LATEST FILLINGS BY COMPANY:
 $p = new EDGARDataProcessor();
+// $results = '/home/cruzpach/Documents/dev/fDashboard/public/fillings/078003/10K/078003_10K_1.xlsx';
+// $results = $r->getEdgarData('', '078003', '', 20010101, 20221231);
+// $results = $p->extractExcelTables($results);
+// $results = $p->getFillingsListByCompany('078003');
 
-$results = $p->getFillingsListByCompany('078003');
+dd($results);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // foreach ($results as $result)
 // {
@@ -23,7 +54,7 @@ $results = $p->getFillingsListByCompany('078003');
 // }
 
 ?>
-
+{{-- 
 <!DOCTYPE html>
 
 <title>Document</title>
@@ -67,4 +98,4 @@ $results = $p->getFillingsListByCompany('078003');
 
     <footer>Footer</footer>
 </body>
-
+ --}}
