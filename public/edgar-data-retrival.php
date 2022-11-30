@@ -15,24 +15,11 @@ class EDGARDataRetriever
 
     public function createSearchUrl(string $cikNumber, $fillingType, $fromDate)
     {
-        // For Loop for readability?????
-        switch (strlen($cikNumber)) {
-            case 5:
-                $cikNumber = '00000' . $cikNumber;
-                break;
-            case 6:
-                $cikNumber = '0000' . $cikNumber;
-                break;
-            case 7:
-                $cikNumber = '000' . $cikNumber;
-                break;
-            case 8:
-                $cikNumber = '00' . $cikNumber;
-                break;
-            case 9:
-                $cikNumber = '0' . $cikNumber;
-                break;
+        for ($i = 0; strlen($cikNumber) < 10; $i++)
+        {
+            $cikNumber = '0' . $cikNumber;
         }
+
         return "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=$cikNumber&type=$fillingType&datea=$fromDate&start=&output=html&count=100&owner=excluded";
     }
 
@@ -48,7 +35,7 @@ class EDGARDataRetriever
         return curl_exec($ch);
     }
 
-    //TODO: Check REGEX for case insensitive
+    // THESE METHODS EXIST TO SUPPORT THE XLSX/XLS FILE DOWNLOAD
     public function extractLinksReferences(string $htmlSource)
     {
         $dom = new DOMDocument();
@@ -70,11 +57,10 @@ class EDGARDataRetriever
         $selectedLinks = [];
 
         foreach ($links as $link) {
-            if (preg_match('(CIK|cik)', $link) and preg_match('(action=view)', $link)) {
+            if (preg_match('/cik/i', $link) and preg_match('(action=view)', $link)) {
                 $selectedLinks[] = 'https://www.sec.gov' . $link;
             }
         }
-
         return $selectedLinks;
     }
 
@@ -87,7 +73,6 @@ class EDGARDataRetriever
         foreach ($links as $link) {
             (preg_match('(.xls)', $link)) ? $selectedLinks[] = 'https://www.sec.gov' . $link : '';
         }
-
         return $selectedLinks;
     }
 
