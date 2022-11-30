@@ -95,7 +95,7 @@ class EDGARDataRetriever
     {
         $modFillingType = str_replace("-", "", $fillingType);
 
-        //TODO: set this into a configuration fiule  
+        //TODO: set this into a configuration fiule | Change folder to storage 
         $path = "./fillings/$cikNumber/$modFillingType";
         File::ensureDirectoryExists($path);
 
@@ -109,7 +109,6 @@ class EDGARDataRetriever
             $ch = curl_init(str_replace(" ", "%20", $link));
             curl_setopt($ch, CURLOPT_TIMEOUT, 600);
             curl_setopt($ch, CURLOPT_USERAGENT, $agent); // THIS MESSES UP THE XLSX FILE
-
             $fp = fopen(public_path('fillings/') . "$cikNumber/$modFillingType/$cikNumber" . "_" . "$modFillingType" . "_" . "$counter.xlsx", 'w+');
             curl_setopt($ch, CURLOPT_FILE, $fp);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -128,17 +127,12 @@ class EDGARDataRetriever
 // PFE      078003
 
 //SAMPLES OF DOWNLOAD PROCESS FOR FILES (ONLY LAST METHOD IS NECESSARY):
-// $r= new EDGARDataRetriever();
-// $results = $r->getEdgarData('', '0320193', '10-K', 20010101);
-// $results = $r->getSeachResulsURLs($results);
+// $r = new EDGARDataRetriever();
+// $url = $r->createSearchURL('2488', '10-K', 20010101);
+// $results = $r->getEdgarData($url);
+// $results = createCikLinks($results);
 // $results = $r->getFillingsUrls('320193', '10-K', 20050101);
 // $results = $r->downloadExcelFillings('078003', '10-K', 20050101);
-
-
-//TO GET A LIST OF LATEST FILLINGS BY COMPANY:
-// $results = $r->getEdgarData('', '078003', '', 20010101, 20221231);
-// $results = $p->getFillingsListByCompany($results);
-
 
 //TO MEASURE SPEED OF EXECUTION
 // $time_start = microtime(true);

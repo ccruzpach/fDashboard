@@ -57,7 +57,8 @@ class EDGARDataProcessor
 
     public function getFillingsListByCompany($cik)
     {       
-        $edgarData = (new EDGARDataRetriever())->getEdgarData('', $cik, '', 20000101);
+        $edgarData = new EDGARDataRetriever();
+        $edgarData = $edgarData->getEdgarData($edgarData->createSearchUrl($cik, '', 20000101));
 
         $dom = new DOMDocument();
         $dom->validateOnParse = true;

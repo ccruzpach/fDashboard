@@ -13,12 +13,12 @@ require '/home/cruzpach/Documents/dev/fDashboard/public/edgar-data-retrival.php'
 
 //TODO: Create Views for each example
 $r = new EDGARDataRetriever();
-$url = $r->createSearchURL('2488', '10-K', 20010101);
+$p = new EDGARDataProcessor();
+// $url = $r->createSearchURL('0320193', '10-K', 20010101);
 // $results = $r->getEdgarData($url);
-// $results = $r->getFillingsUrls('320193', '10-K', 20050101);
-
-dd($url);
-
+// $url = $r->createSearchURL('78003', '', 20010101);
+// $results = $r->getEdgarData($url);
+$results = $p->getFillingsListByCompany('78003');
 
 
 
@@ -36,12 +36,13 @@ dd($url);
 // $r->downloadExcelFillings('078003', '10-K', 20050101);
 
 //TO GET A LIST OF LATEST FILLINGS BY COMPANY:
-$p = new EDGARDataProcessor();
+
 // $results = '/home/cruzpach/Documents/dev/fDashboard/public/fillings/078003/10K/078003_10K_1.xlsx';
 // $results = $r->getEdgarData('', '078003', '', 20010101, 20221231);
 // $results = $p->extractExcelTables($results);
 // $results = $p->getFillingsListByCompany('078003');
 
+dd($results);
 
 
 
