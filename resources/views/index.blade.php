@@ -13,9 +13,28 @@ require '/home/cruzpach/Documents/dev/fDashboard/public/edgar-data-retrival.php'
 
 //TODO: Create Views for each example
 $r = new EDGARDataRetriever();
-$url = $r->createURL('0320193', '10-K', 20010101);
-$results = $r->getEdgarData($url);
-// $results = $r->getSeachResulsURLs($results);
+// $url = $r->createSearchURL('0320193', '10-K', 20010101);
+// $results = $r->getEdgarData($url);
+$results = $r->getFillingsUrls('320193', '10-K', 20050101);
+
+///function should be called EXTRACTHTMLELEMENTS:LINKS??
+
+//NEXT FUNCTION SHOULD GET THOSE ELEMENTS EXTRACTED AND FORM PROPER LINKS FROM IT: ONE FOR FILLING LINKS ANOTHER FOR XLS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // $results = $r->getFillingsUrls('320193', '8-K', 20050101);
 // $r->downloadExcelFillings('078003', '10-K', 20050101);
 
