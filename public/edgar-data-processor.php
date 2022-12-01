@@ -10,8 +10,6 @@ class EDGARDataProcessor
 {
     public function createID($name)
     {
-        //CREATE LOGIC TO SHORTEN NAME | ADD CONDITIONAL STATEMENTS BASED ON AMOUNT OF WORDS
-        //CREATE TABLE WITH SHORTCUTS FOR THESE TITLES
         $name = strtolower($name);
         $name = preg_replace('/\s+/', '_', $name);
         $name = strtok($name, '-');
@@ -19,6 +17,7 @@ class EDGARDataProcessor
 
         return $name;
     }
+
 
     //CONSIDER: SEPARATING PARSING THE XLS AND CONSTRUCTING THE HTML
     public function extractExcelTables(string $path)
@@ -28,7 +27,8 @@ class EDGARDataProcessor
         if ($xlsx = @SimpleXLSX::parse($path)) {
             $sheets = $xlsx->sheetNames();
 
-            for ($i = 0; $i < count($sheets); $i++) {
+            for ($i = 0; $i < count($sheets); $i++) 
+            {
                 $fillingSection = $xlsx->rows($i);
                 $name = $fillingSection[0][0];
                 $id = $this->createID($name);
@@ -46,41 +46,35 @@ class EDGARDataProcessor
                 $tableString = implode($rows);
                 $tables[] = $headerOpening . $name . $headerClosing . $tableOpening . $tableString . $footer;
             }
-
             return $tables;
         } else {
             echo SimpleXLSX::parseError();
         }
-
         return $tables;
     }
 
     public function getFillingsListByCompany($cik)
     {       
-        $edgarData = new EDGARDataRetriever();
-        $edgarData = $edgarData->getEdgarData($edgarData->createSearchUrl($cik, '', 20000101));
-
-        $dom = new DOMDocument();
-        $dom->validateOnParse = true;
-        @$dom->loadHTML($edgarData);
-        
-        $tRows = $dom->getElementsByTagName('tr');
+        $r = new EDGARDataRetriever();
+        $edgarData = $r->getEdgarData($r->createSearchUrl($cik, '', 20000101));
+        //TODO: eleminate repetition of the function parseDOM
+        $tRows = $r->parseDOM($edgarData, 'tr');
         $fillingList = [];
-        $tDocLinks = $dom->getElementsByTagName('a');
+        $tDocLinks = $r->parseDOM($edgarData, 'a');
         $fillingLinks = [];
-        
+
         foreach ($tDocLinks as $link)
         {
             $l = $link->getAttribute('href');
             (preg_match('(Archives/edgar/data)', $l)) ? $fillingLinks[] = 'https://www.sec.gov' . $l : '';
         }
-        
+
         foreach ($tRows as $row)
         {
             $row = trim($row->textContent);
             $row = explode("\n", $row);    
             $tempArray = [];
-        
+
             for ($i = 0; $i < count($row); $i++) 
             {
                 if (($i == 0)

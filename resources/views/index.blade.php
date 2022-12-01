@@ -5,70 +5,82 @@ use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Support\Facades\Storage;
 
-//TODO: RELATIVE PATH is better;
-require '/home/cruzpach/Documents/dev/fDashboard/public/edgar-data-processor.php';
-require '/home/cruzpach/Documents/dev/fDashboard/public/edgar-data-retrival.php';
+require public_path('edgar-data-processor.php');
+require public_path('edgar-data-retrival.php');
 
-// TODO: EXTRACT FILLING DATE FROM SEARCH RESULTS AND ADD IT TO FILLING NAME!
 
-//TODO: Create Views for each example
 $r = new EDGARDataRetriever();
 $p = new EDGARDataProcessor();
-// $url = $r->createSearchURL('0320193', '10-K', 20010101);
-// $results = $r->getEdgarData($url);
-// $url = $r->createSearchURL('78003', '', 20010101);
-// $results = $r->getEdgarData($url);
-$results = $p->getFillingsListByCompany('78003');
+
+$results = $r->getEdgarData($r->createSearchUrl('320193', '10-K', 20050101));
+$results = $r->createHtmlLinks($results);
+//TODO: run a foreach here
+
+// $result = $r->getEdgarData($results[0]);
 
 
+// function create
+// $result = $r->extractLinksReferences($result);
 
+//  $fResult = [];
 
-
-
-
-
-
-
-
-
-
-// $results = $r->getFillingsUrls('320193', '8-K', 20050101);
-// $r->downloadExcelFillings('078003', '10-K', 20050101);
-
-//TO GET A LIST OF LATEST FILLINGS BY COMPANY:
-
-// $results = '/home/cruzpach/Documents/dev/fDashboard/public/fillings/078003/10K/078003_10K_1.xlsx';
-// $results = $r->getEdgarData('', '078003', '', 20010101, 20221231);
-// $results = $p->extractExcelTables($results);
-// $results = $p->getFillingsListByCompany('078003');
-
-dd($results);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// foreach ($results as $result)
+// for ($i = 0; $i < count($result); $i++)
 // {
-//     'cik_number' => $request->$results['cik_str'],
-//     'stock_symbol' => $request->$results['ticker'],
-//     'company_title' => $request->$results['title']
+//     (preg_match('(doc=/Archives/edgar/data/)', $result[$i])) ? $fResult = 'https://www.sec.gov' . $result[$i] : '';
 // }
 
+
+// dd($fResult);
+
+
+
+
+function getFilingsHtmlsUrls()
+{
+    $r = new EDGARDataRetriever();
+    $results = $r->getEdgarData($r->createSearchUrl('320193', '10-K', 20050101));
+    $results = $r->createHtmlLinks($results);
+    $newResults = [];
+
+    for ($i = 0; $i < count($results); $i++)
+    {
+        $result = $r->getEdgarData($results[$i]);
+        $result = $r->extractLinksReferences($result);
+
+        //TODO: Correct method below to pick the right options: some are "ix?doc" and some are
+        // $result = $r->createHtmLFillingLinks($result);
+        $newResults[] = $result;
+    }
+    return $newResults;
+}
+
+$sample = getFilingsHtmlsUrls();
+
+
+
+
+
+// $results = $r->downloadExcelFillings('078003', '10-K', 20050101);
+// dd($sample);
+
+
+
+
+
+// public function getFillingsXlsUrls(string $cikNumber, string $fillingType, int $fromDate, bool $isExcelFile = false)
+//     {
+//         $results = $this->getEdgarData($this->createSearchUrl($cikNumber, $fillingType, $fromDate));
+//         $results = $this->createCikLinks($results);
+//         $dates = $this->getFillingDates($cikNumber, $fillingType);
+//         $newResults = [];
+
+//         for ($i = 0; $i < count($results); $i++) {
+//             $result = $this->getEdgarData($results[$i]);
+//             $result = $this->createXlsLinks($result);
+//             $newResults[] = [$dates[$i][0], $result[0]];
+//         }
+//         return $newResults;
+//     }
 ?>
 {{-- 
 <!DOCTYPE html>
