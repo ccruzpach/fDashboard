@@ -17,7 +17,7 @@ class EDGARDataRetriever
     {
         for ($i = 0; strlen($cikNumber) < 10; $i++) {
             $cikNumber = '0' . $cikNumber;
-        }        
+        }
         return "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=$cikNumber&type=$fillingType&datea=$fromDate&start=&output=html&count=100&owner=excluded";
     }
 
@@ -122,16 +122,36 @@ class EDGARDataRetriever
         return $selectedLinks;
     }
 
-    function createHtmLFillingLinks($htmlSource)
+    function createHtmlFillingLink($htmlSource)
     {
         $links = $this->extractLinksReferences($htmlSource);
 
         $selectedLinks = '';
 
-        foreach ($links as $link) {
-            (preg_match('(Archives/edgar/data/)', $link)) ? $selectedLinks = 'https://www.sec.gov' . $link : '';
+        for ($j = 0; $j < count($links); $j++)
+        {
+            if (preg_match('(/Archives/edgar/data/)', $links[$j]))
+            {
+                $selectedLinks = 'https://www.sec.gov/' . $links[$j];
+                break;
+            }
         }
         return $selectedLinks;
+    }
+
+    public function getFilingsHtmlsUrls(string $cikNumber, string $fillingType, int $fromDate)
+    {
+        $results = $this->getEdgarData($this->createSearchUrl($cikNumber, $fillingType, $fromDate));
+        $results = $this->createHtmlLinks($results);
+        $newResults = [];
+
+        for ($i = 0; $i < count($results); $i++) 
+        {
+            $result = $this->getEdgarData($results[$i]);
+            $result = $this->createHtmlFillingLink($result);
+            $newResults[] = $result;
+        }
+        return $newResults;
     }
 
     public function getFillingsXlsUrls(string $cikNumber, string $fillingType, int $fromDate)
@@ -141,7 +161,8 @@ class EDGARDataRetriever
         $dates = $this->getFillingDates($cikNumber, $fillingType);
         $newResults = [];
 
-        for ($i = 0; $i < count($results); $i++) {
+        for ($i = 0; $i < count($results); $i++) 
+        {
             $result = $this->getEdgarData($results[$i]);
             $result = $this->createXlsLinks($result);
             $newResults[] = [$dates[$i][0], $result[0]];

@@ -12,77 +12,44 @@ require public_path('edgar-data-retrival.php');
 $r = new EDGARDataRetriever();
 $p = new EDGARDataProcessor();
 
-$results = $r->getEdgarData($r->createSearchUrl('320193', '10-K', 20050101));
-$results = $r->createHtmlLinks($results);
-//TODO: run a foreach here
-
-// $result = $r->getEdgarData($results[0]);
+// $results = $r->getEdgarData($r->createSearchUrl('320193', '10-K', 20050101));
+// $results = $r->createHtmlLinks($results);
 
 
-// function create
-// $result = $r->extractLinksReferences($result);
+$time_start = microtime(true);
+var_dump($r->getFilingsHtmlsUrls('320193', '10-K', 20050101));
+$time_end = microtime(true);
+$time = $time_end - $time_start;
 
-//  $fResult = [];
-
-// for ($i = 0; $i < count($result); $i++)
-// {
-//     (preg_match('(doc=/Archives/edgar/data/)', $result[$i])) ? $fResult = 'https://www.sec.gov' . $result[$i] : '';
-// }
-
-
-// dd($fResult);
-
-
-
-
-function getFilingsHtmlsUrls()
-{
-    $r = new EDGARDataRetriever();
-    $results = $r->getEdgarData($r->createSearchUrl('320193', '10-K', 20050101));
-    $results = $r->createHtmlLinks($results);
-    $newResults = [];
-
-    for ($i = 0; $i < count($results); $i++)
-    {
-        $result = $r->getEdgarData($results[$i]);
-        $result = $r->extractLinksReferences($result);
-
-        //TODO: Correct method below to pick the right options: some are "ix?doc" and some are
-        // $result = $r->createHtmLFillingLinks($result);
-        $newResults[] = $result;
-    }
-    return $newResults;
-}
-
-$sample = getFilingsHtmlsUrls();
+echo " Operational Time: $time";
 
 
 
 
 
-// $results = $r->downloadExcelFillings('078003', '10-K', 20050101);
-// dd($sample);
 
 
 
 
 
-// public function getFillingsXlsUrls(string $cikNumber, string $fillingType, int $fromDate, bool $isExcelFile = false)
-//     {
-//         $results = $this->getEdgarData($this->createSearchUrl($cikNumber, $fillingType, $fromDate));
-//         $results = $this->createCikLinks($results);
-//         $dates = $this->getFillingDates($cikNumber, $fillingType);
-//         $newResults = [];
 
-//         for ($i = 0; $i < count($results); $i++) {
-//             $result = $this->getEdgarData($results[$i]);
-//             $result = $this->createXlsLinks($result);
-//             $newResults[] = [$dates[$i][0], $result[0]];
-//         }
-//         return $newResults;
-//     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ?>
-{{-- 
+{{--
 <!DOCTYPE html>
 
 <title>Document</title>
@@ -116,14 +83,14 @@ $sample = getFilingsHtmlsUrls();
                 @foreach(array_slice($results, 0, 7) as $result)
                 {
                     '<li>{{$result}}</li>';
-                }                
-                @endforeach
-            </ul>
-            
-            </div>
-        </div>
-    </div>
+}
+@endforeach
+</ul>
 
-    <footer>Footer</footer>
+</div>
+</div>
+</div>
+
+<footer>Footer</footer>
 </body>
- --}}
+--}}
