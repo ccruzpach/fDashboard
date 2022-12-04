@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FinancialSector extends Model
+class FinancialIndustry extends Model
 {
     use HasFactory;
 
-    protected $table = 'financial_sectors';
+    protected $table = 'financial_industries';
     
     protected $fillable = [
-        'sector'];
+        'sic_code', 'id', 'industry'];
 }

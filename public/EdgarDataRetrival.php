@@ -272,6 +272,7 @@ class EDGARDataRetriever
                 $newResults[] = $tempArray;
             }
         }
+        $newResults = json_encode($newResults);
         return $newResults;
     }
 }

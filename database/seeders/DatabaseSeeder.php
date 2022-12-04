@@ -16,6 +16,10 @@ class DatabaseSeeder extends Seeder
     {
         // $this->call(CompanyTableSeeder::class);
         $this->call(FinancialSectorTableSeeder::class);
+        // $this->call(FinancialIndustryTableSeeder::class);
+
+
+
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([

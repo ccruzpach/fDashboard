@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\FinancialSector;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class FinancialSectorTableSeeder extends Seeder
 {
-    
     /**
      * Run the database seeds.
      *
@@ -15,19 +15,14 @@ class FinancialSectorTableSeeder extends Seeder
      */
     public function run()
     {
-        
-        $url = 'https://www.sec.gov/corpfin/division-of-corporation-finance-standard-industrial-classification-sic-code-list';
+        $json = file_get_contents(public_path('SICData.json'));
+        $sectors = json_decode($json, true);
 
-
-        $results = getSICData($url);
-
-        foreach ($results as $result)
+        foreach ($sectors as $sector)
         {
-            Company::query()->updateOrCreate([
-                'sector' => $result['sector']                
+            FinancialSector::query()->updateOrCreate([
+                'sector' => str_replace("Office of ", "", $sector['sector'])
             ]);
         }
-
-
     }
 }

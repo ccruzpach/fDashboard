@@ -1,30 +1,29 @@
-
-@extends('components/layout')
-
-{{-- 
-<link rel="stylesheet" href="/app.css">
-
 <?php
 
-use Illuminate\Http\Client\Request as ClientRequest;
-use Illuminate\Support\Facades\Http;
-use Symfony\Component\HttpFoundation\Request;
-use Illuminate\Support\Facades\Storage;
 
-require public_path('edgar-data-processor.php');
-require public_path('edgar-data-retrival.php');
 
-$sectorsAndInsdustries = 'https://www.sec.gov/corpfin/division-of-corporation-finance-standard-industrial-classification-sic-code-list'
+require public_path('EdgarDataProcessor.php');
+require public_path('EdgarDataRetrival.php');
+
+$url = 'https://www.sec.gov/corpfin/division-of-corporation-finance-standard-industrial-classification-sic-code-list';
 
 
 $r = new EDGARDataRetriever();
 $p = new EDGARDataProcessor();
 
+$path = public_path('SICData.json');
+
+dd(file_get_contents($path));
 
 
 
+// @extends('components/layout');
 
 ?>
+
+{{-- 
+<link rel="stylesheet" href="/app.css">
+
 
 
 

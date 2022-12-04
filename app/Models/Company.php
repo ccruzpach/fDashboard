@@ -11,6 +11,7 @@ class Company extends Model
     use HasFactory;
 
     protected $table = 'companies';
+    
     protected $fillable = [
         'cik_number',
         'stock_symbol',
