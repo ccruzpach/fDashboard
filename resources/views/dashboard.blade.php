@@ -1,3 +1,9 @@
+
+@extends('components/layout')
+
+{{-- 
+<link rel="stylesheet" href="/app.css">
+
 <?php
 
 use Illuminate\Http\Client\Request as ClientRequest;
@@ -8,47 +14,21 @@ use Illuminate\Support\Facades\Storage;
 require public_path('edgar-data-processor.php');
 require public_path('edgar-data-retrival.php');
 
+$sectorsAndInsdustries = 'https://www.sec.gov/corpfin/division-of-corporation-finance-standard-industrial-classification-sic-code-list'
+
 
 $r = new EDGARDataRetriever();
 $p = new EDGARDataProcessor();
-
-// $results = $r->getEdgarData($r->createSearchUrl('320193', '10-K', 20050101));
-// $results = $r->createHtmlLinks($results);
-
-
-$time_start = microtime(true);
-var_dump($r->getFilingsHtmlsUrls('320193', '10-K', 20050101));
-$time_end = microtime(true);
-$time = $time_end - $time_start;
-
-echo " Operational Time: $time";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 
 
 ?>
+
+
+
+
 {{--
 <!DOCTYPE html>
 

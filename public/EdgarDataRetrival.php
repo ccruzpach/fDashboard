@@ -13,6 +13,9 @@ class EDGARDataRetriever
     public $fillingType;
     public $fromDate;
 
+    // SECTION
+    // CREATE URLS AND RETRIEVE HTML DATA FROM URL
+
     public function createSearchUrl(string $cikNumber, $fillingType, $fromDate)
     {
         for ($i = 0; strlen($cikNumber) < 10; $i++) {
@@ -33,7 +36,9 @@ class EDGARDataRetriever
         return curl_exec($ch);
     }
 
-    //TODO: SHOULD THIS BE STATIC OR A SERVICE CLASS
+    // SECTION
+    // PARSE HTML EXTRACT SPECIFIC HTML TAGS/ATTRIBUTES
+
     public function parseDOM($htmlSource, $htmlTag = 'tr')
     {
         $dom = new DOMDocument();
@@ -98,6 +103,9 @@ class EDGARDataRetriever
         return $selectedLinks;
     }
 
+    // SECTION
+    // CREATES ACCESSABLE/DOWNLOADABLE LINKS FROM PARSED HTML
+
     public function createXlsLinks($htmlSource)
     {
         $links = $this->extractLinksReferences($htmlSource);
@@ -128,15 +136,48 @@ class EDGARDataRetriever
 
         $selectedLinks = '';
 
-        for ($j = 0; $j < count($links); $j++)
-        {
-            if (preg_match('(/Archives/edgar/data/)', $links[$j]))
-            {
+        for ($j = 0; $j < count($links); $j++) {
+            if (preg_match('(/Archives/edgar/data/)', $links[$j])) {
                 $selectedLinks = 'https://www.sec.gov/' . $links[$j];
                 break;
             }
         }
         return $selectedLinks;
+    }
+
+    //SECTION
+    // EXTRACT ACCESSIBLE/DOWNLOADABLE LINKS FOR EDGAR FILLINGS
+
+    //TO EXTRACT LINKS FOR ALL FI
+    public function getAllFillingsListByCompany(string $cikNumber, int $fromDate)
+    {
+        $edgarData = $this->getEdgarData($this->createSearchUrl($$cikNumber, '', $fromDate));
+        $tRows = $this->parseDOM($edgarData, 'tr');
+        $fillingList = [];
+        $tDocLinks = $$this->parseDOM($edgarData, 'a');
+        $fillingLinks = [];
+
+        foreach ($tDocLinks as $link) {
+            $l = $link->getAttribute('href');
+            (preg_match('(Archives/edgar/data)', $l)) ? $fillingLinks[] = 'https://www.sec.gov' . $l : '';
+        }
+
+        foreach ($tRows as $row) {
+            $row = trim($row->textContent);
+            $row = explode("\n", $row);
+            $tempArray = [];
+
+            for ($i = 0; $i < count($row); $i++) {
+                if (($i == 0)
+                    or
+                    ($i == 3 or $i == 4) and preg_match("/\s\d{4}-\d{2}-\d{2}/", $row[$i])
+                ) {
+                    $tempArray[] = trim($row[$i]);
+                }
+            }
+            $fillingList[] = implode(' | ', $tempArray);
+        }
+        return array_combine(array_slice($fillingList, 5, -1), $fillingLinks);
     }
 
     public function getFilingsHtmlsUrls(string $cikNumber, string $fillingType, int $fromDate)
@@ -145,8 +186,7 @@ class EDGARDataRetriever
         $results = $this->createHtmlLinks($results);
         $newResults = [];
 
-        for ($i = 0; $i < count($results); $i++) 
-        {
+        for ($i = 0; $i < count($results); $i++) {
             $result = $this->getEdgarData($results[$i]);
             $result = $this->createHtmlFillingLink($result);
             $newResults[] = $result;
@@ -161,14 +201,16 @@ class EDGARDataRetriever
         $dates = $this->getFillingDates($cikNumber, $fillingType);
         $newResults = [];
 
-        for ($i = 0; $i < count($results); $i++) 
-        {
+        for ($i = 0; $i < count($results); $i++) {
             $result = $this->getEdgarData($results[$i]);
             $result = $this->createXlsLinks($result);
             $newResults[] = [$dates[$i][0], $result[0]];
         }
         return $newResults;
     }
+
+    // SECTION
+    // DOWNLOAD XLS FILES FROM EDGAR DATABASE
 
     public function downloadFile($url, $downloadPath, $agent = "Mozilla/5.0 (X11; Linux x86_64; rv:60.0)")
     {
@@ -200,6 +242,37 @@ class EDGARDataRetriever
             $this->downloadFile($links[$i][1], $downloadPath);
         }
         echo "Files successfully saved to disks.";
+    }
+
+    // SECTION
+    // GET SECTOR AND INDUSTRY INFORMATION
+
+    public function getSICData($url)
+    {
+        $results = $this->parseDOM($this->getEdgarData($url));
+
+        $newResults = [];
+
+        for ($i = 0; $i < count($results); $i++) {
+            if ($i == 0) {
+                continue;
+            } else {
+                $result = explode("\n", $results[$i]->textContent);
+                $tempArray = [];
+
+                for ($j = 0; $j < count($result); $j++) {
+                    if ($j == 1) {
+                        $tempArray['sic_code'] = trim(str_replace("\t", "", $result[$j]));
+                    } elseif ($j == 2) {
+                        $tempArray['sector'] = trim(str_replace("\t", "", $result[$j]));
+                    } elseif ($j == 3) {
+                        $tempArray['industry'] = trim(str_replace("\t", "", $result[$j]));
+                    }
+                }
+                $newResults[] = $tempArray;
+            }
+        }
+        return $newResults;
     }
 }
 

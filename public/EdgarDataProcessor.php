@@ -18,6 +18,11 @@ class EDGARDataProcessor
         return $name;
     }
 
+    public function createHTMLTables($path)
+    {
+
+    }
+
 
     //CONSIDER: SEPARATING PARSING THE XLS AND CONSTRUCTING THE HTML
     public function extractExcelTables(string $path)
@@ -35,59 +40,22 @@ class EDGARDataProcessor
                 $headerOpening = "<h3><strong>";
                 $headerClosing = "</strong></h3>";
                 $tableOpening = "<table id=\"$id\" border=\"1\" cellpadding=\"3\" style=\"border-collapse: collapse\">";
-                $footer = "</table>";
+                $tableClosing = "</table>";
 
                 $rows = [];
 
-                foreach ($fillingSection as $row) {
+                foreach ($fillingSection as $row) 
+                {
                     $rows[] = '<tr><td>' . implode('</td><td>', $row) . '</td></tr>';
                 }
-
                 $tableString = implode($rows);
-                $tables[] = $headerOpening . $name . $headerClosing . $tableOpening . $tableString . $footer;
+                $tables[] = $headerOpening . $name . $headerClosing . $tableOpening . $tableString . $tableClosing;
             }
             return $tables;
         } else {
             echo SimpleXLSX::parseError();
         }
         return $tables;
-    }
-
-    public function getFillingsListByCompany($cik)
-    {       
-        $r = new EDGARDataRetriever();
-        $edgarData = $r->getEdgarData($r->createSearchUrl($cik, '', 20000101));
-        //TODO: eleminate repetition of the function parseDOM
-        $tRows = $r->parseDOM($edgarData, 'tr');
-        $fillingList = [];
-        $tDocLinks = $r->parseDOM($edgarData, 'a');
-        $fillingLinks = [];
-
-        foreach ($tDocLinks as $link)
-        {
-            $l = $link->getAttribute('href');
-            (preg_match('(Archives/edgar/data)', $l)) ? $fillingLinks[] = 'https://www.sec.gov' . $l : '';
-        }
-
-        foreach ($tRows as $row)
-        {
-            $row = trim($row->textContent);
-            $row = explode("\n", $row);    
-            $tempArray = [];
-
-            for ($i = 0; $i < count($row); $i++) 
-            {
-                if (($i == 0)
-                    or
-                    ($i == 3 or $i == 4) and preg_match("/\s\d{4}-\d{2}-\d{2}/", $row[$i]))
-                {
-                    $tempArray[] = trim($row[$i]);
-                }
-            }
-            $fillingList[] = implode(' | ', $tempArray);
-        }
-        
-        return array_combine(array_slice($fillingList, 5, -1), $fillingLinks);
     }
 
     //TODO: Finish this function
@@ -109,4 +77,4 @@ class EDGARDataProcessor
 
 // $p = new EDGARDataProcessor();
 // $results = $p->extractExcelTables($results);
-// $results = $p->getFillingsListByCompany('078003');
+// $results = $p->getFillingsListByCompany('078003', 20180101);
