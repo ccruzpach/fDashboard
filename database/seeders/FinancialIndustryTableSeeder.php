@@ -64,8 +64,8 @@ class FinancialIndustryTableSeeder extends Seeder
 
             //TODO: FIGURE OUT FOREIGN KEY CONNECTION
             FinancialIndustry::query()->updateOrCreate([
-                'sic_code' => $industry['sic_code'],                
-                'id' => $sector,
+                'sector_id' => $sector,                
+                'sic_code' => $industry['sic_code'],
                 'industry' => str_replace("Office of ", "", $industry['industry'])
             ]);
         }

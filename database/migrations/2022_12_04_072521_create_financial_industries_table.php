@@ -15,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('financial_industries', function (Blueprint $table) {
             $table->id();
-            $table->foreign('sector_id')->constrained(); //financial_sectors
+            // $table->unsignedBigInteger('sector_id');
+            // $table->foreign('sector_id')->references('id')->on('financial_sectors');
+            $table->foreignId('sector_id')->constrained('financial_sectors');
             $table->integer('sic_code');
             $table->text('industry');
             $table->timestamps();

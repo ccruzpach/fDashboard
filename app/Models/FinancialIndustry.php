@@ -12,5 +12,5 @@ class FinancialIndustry extends Model
     protected $table = 'financial_industries';
     
     protected $fillable = [
-        'sic_code', 'id', 'industry'];
+      'sector_id', 'sic_code', 'industry'];
 }
