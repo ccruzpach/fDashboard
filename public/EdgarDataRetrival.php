@@ -21,6 +21,7 @@ class EDGARDataRetriever
         for ($i = 0; strlen($cikNumber) < 10; $i++) {
             $cikNumber = '0' . $cikNumber;
         }
+        //owner=include ====> gets forms 3, 4, and 5;
         return "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=$cikNumber&type=$fillingType&datea=$fromDate&start=&output=html&count=100&owner=excluded";
     }
 

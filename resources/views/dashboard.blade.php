@@ -5,71 +5,82 @@
 require public_path('EdgarDataProcessor.php');
 require public_path('EdgarDataRetrival.php');
 
-$url = 'https://www.sec.gov/corpfin/division-of-corporation-finance-standard-industrial-classification-sic-code-list';
+// $url = 'https://www.sec.gov/corpfin/division-of-corporation-finance-standard-industrial-classification-sic-code-list';
 
+
+// $r = new EDGARDataRetriever();
+// $p = new EDGARDataProcessor();
+
+
+// $url = "https://www.sec.gov/files/company_tickers.json";
+
+// $url = file_get_contents($url);
+// dd($url);
+// $decoded_url = json_decode($url, true);
+// dd(count($decoded_url));
+
+
+
+
+
+// $path = public_path('SICData.json');
+
+// dd(file_get_contents($path));
+
+// To get list of all fillings by company -- KEY!!!!
+// https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json
+
+
+// To extract SIC number for ticker
+// https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000861289&owner=include&count=40&hidefilings=0
+
+
+// To extract all companies for a given SIC number
+//Increment "start" to go to nex pages
+$sample = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&SIC=3571&owner=include&start=0&count=100&hidefilings=0';
+$url1 = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&SIC=100&owner=include&match=starts-with&start=40&count=100&hidefilings=0';
+$url2 = 'https://www.sec.gov/cgi-bin/browse-edgar?company=&match=starts-with&filenum=&State=&Country=&SIC=100&myowner=exclude&action=getcompany';
 
 $r = new EDGARDataRetriever();
-$p = new EDGARDataProcessor();
-
-$path = public_path('SICData.json');
-
-dd(file_get_contents($path));
-
-
-
-// @extends('components/layout');
-
-?>
-
-{{-- 
-<link rel="stylesheet" href="/app.css">
+$urlData = $r->getEdgarData($url1);
+$results2 = $r->parseDOM($urlData, 'span');
+$results = $r->parseDOM($urlData);
+$companies = [];
+$sicNumber = "";
 
 
+for ($i = 0; $i < count($results); $i++)
+{
 
+    $result = explode("\n", trim($results[$i]->textContent));
+    $tempList = [];
 
-
-{{--
-<!DOCTYPE html>
-
-<title>Document</title>
-<link rel="stylesheet" href="/app.css">
-
-<body>
-    <header>Header</header>
-
-    <div class="main">        
-        <div class="section">Search Bar</div>
-        
-        <div class="section" style="">
-            <p style="text-align: center">Trading Information</p>
-            <div style="display:flex; justify-content: space-evenly">
-                <p>High: 100</p>
-                <p>Lo: 35</p>
-                <p>Daily Open: 86.5</p>
-                <p>Daily Close: 89.99</p>
-            </div>
-        </div>
-        
-        <div class="section">
-            <p>Company Description</p>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-        </div>
-        
-        <div class="section-flex">
-            <div id="main-column" class="section" style="width:65%">Financial Table</div>
-            <div id="right-side-column" class="section" style="width=35%">All Fillings for Ticker
-            <ul>
-                @foreach(array_slice($results, 0, 7) as $result)
-                {
-                    '<li>{{$result}}</li>';
+    for ($j = 0; $j < count($result); $j++)
+    {
+        $tempList[] = trim($result[$j]);
+    }
+    $companies[] = $tempList;
 }
-@endforeach
-</ul>
 
-</div>
-</div>
-</div>
+for ($i = 0; $i < count($results2); $i++)
+{
+    $r = $results2[$i]->textContent;
+    preg_match('(\d+)', $r, $sicNumber);
+    // $sicInfo = $industry;
 
-<footer>Footer</footer>
-</body>
---}}
+    break;
+}
+
+$sicNumber = implode($sicNumber);
+array_unshift($companies, $sicNumber);
+
+$path = storage_path('/sic');
+File::ensureDirectoryExists($path);
+file_put_contents($path . $sicNumber . ".json",json_encode($companies));
+
+dd($companies);
+
+
+
+//THIS SEARCH GIVES YOU EVERYTHING YOU NEED!
+//https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001058027&owner=include&count=40&hidefilings=0
