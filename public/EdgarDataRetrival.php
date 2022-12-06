@@ -34,7 +34,15 @@ class EDGARDataRetriever
 
         return curl_exec($ch);
     }
+  function extractDOM($htmlSource)
+    {
+        $domDocument = new DOMDocument();
+        $domDocument->validateOnParse = true;
+        @$domDocument->loadHTML($htmlSource);
 
+        return $domDocument;
+    }
+    
     public function getHtmlDocument($cikNumber, $fillingType, $fromDate)
     {
         return $this->getHtmlContent($this->createSearchUrl($cikNumber, $fillingType, $fromDate));
@@ -53,14 +61,7 @@ class EDGARDataRetriever
     // SECTION
     // PARSE HTML EXTRACT SPECIFIC HTML TAGS/ATTRIBUTES
 
-    function extractDOM($htmlSource)
-    {
-        $domDocument = new DOMDocument();
-        $domDocument->validateOnParse = true;
-        @$domDocument->loadHTML($htmlSource);
-
-        return $domDocument;
-    }
+  
 
     public function getFillingDates(string $cikNumber, string $fillingType, $fromDate)
     {
@@ -265,7 +266,7 @@ class EDGARDataRetriever
 
     // SECTION
     // GET SECTOR AND INDUSTRY INFORMATION
-    
+
     public function getSICData($url)
     {
         $results = $this->extractDOM($this->getHtmlContent($url));
