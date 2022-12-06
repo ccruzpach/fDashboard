@@ -1,0 +1,64 @@
+NOTES: 
+    1. 
+    2. CHECK ARRAY  NAMING CONVENTIONS INSIDE FUNCTIONS
+    3. getSICData NAME SHOULD BE MORE DESCRIPTIVE. FUNCTION NEEDS REFACTORING TO IDENTIFY PROPER URL TO RECEIVE
+    4. 
+    5. RENAME THE FUNCTIONS INSIDE <<CREATE_URLS>> FUNCTIONS. CLARIFY FUNCTION'S PURPOSE.
+    6. 
+
+----------
+
+
+URL_DATA_PROVIDERS = [
+    createSearchUr -> creates URL
+    getHtmlContent -> Extract Data from URL
+    extractDOM -> Represents Data as HTML DOM / ALSO EXTRACTS SPECIFIC TAGS FROM THE HTML]
+
+
+----------
+
+///// SHOULD THESE FUNCTIONS BE CALLED HELPER FUNCTIONS?????????????????????????????????????????????
+
+HELPER_FUNCTIONS = [ 
+    getHTMLDocument => URL_DATA_PROVIDERS(getHtmlContent, createSearchUrl);
+    extracHtmlByTag
+    getHTMLTags => extracHtmlByTag]
+
+
+----------
+
+
+EXTRACTS_HTML_ATTRIBUTES = [ 
+    extractHTMLTags -> Extracts HTML Tags from DOM
+    extractLinksReferences -> Extracts HTML attributes from DOM (currently hardcoded to extract 'href') => HELPER_FUNCTIONS(getHTMLTags)]
+
+
+----------
+
+
+CREATE_URLS = [
+    createCikLinks => EXTRACTS_HTML_ATTRIBUTES(extractLinksReferences)
+    createXlsLinks => EXTRACTS_HTML_ATTRIBUTES(extractLinksReferences)
+    createHtmlLinks => EXTRACTS_HTML_ATTRIBUTES(extractLinksReferences)
+    createHtmlFillingLink => EXTRACTS_HTML_ATTRIBUTES(extractLinksReferences)]
+
+CREATE_LIST_OF_FILLINGS_BY_COMPANY = [
+    getAllFillingsListByCompany -> Gets a list of all the different kinds of fillings for a company => HELPER_FUNCTIONS(GetHttmlDocument, getHTMLTags) 
+
+EXTRACT_DATES_FOR_FILLINGS_DOWNLOADS = [
+    getFillingDates => HELPER_FUNCTIONS(getHTMLDocument, extracHtmlByTag)
+
+EXTRACT_FILLING_DOCUMENTS_URLS = [
+    getFilingsHtmlsUrls => URL_DATA_PROVIDER(all),***  CREATED_URLS(createHtmlFillingLink)
+    getFillingsXlsUrls => URL_DATA_PROVIDERS(all),*** EXTRACTS_HTML_ATTRIBUTES(createXlsLinks), EXTRACT_DATES_FOR_FILLINGS_DOWNLOADS(all)]
+
+
+----------
+
+
+GET_SIC_SECTOR_&_INDUSTRY_INFORMATION = [
+    getSICData -> Extracts the Sector/Industry table from EDGAR databse
+    getsCompanyListByIndustry -> Extracts list of all companies by SIC(industry)    ]
+DOWNLOAD_FILES = [
+    downloadFile -> BASE CATEGORY FOR DOWNLOAD
+    downloadExcelFillings -> Downloads XLS(X) files to storage => downloadFile, EXTRACT_FILLING_DOCUMENTS_URLS(getFillingsXlsUrls)]

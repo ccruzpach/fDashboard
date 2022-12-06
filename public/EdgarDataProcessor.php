@@ -18,10 +18,7 @@ class EDGARDataProcessor
         return $name;
     }
 
-    public function createHTMLTables($path)
-    {
-
-    }
+ 
 
 
     //CONSIDER: SEPARATING PARSING THE XLS AND CONSTRUCTING THE HTML
