@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1d026d93482b099a267c02dd84978b73",
+    "content-hash": "ccbd816a07b206f971042295b899d1ba",
     "packages": [
         {
             "name": "brick/math",
@@ -2833,59 +2833,6 @@
                 }
             ],
             "time": "2022-11-05T23:03:38+00:00"
-        },
-        {
-            "name": "shuchkin/simplexlsx",
-            "version": "1.0.18",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/shuchkin/simplexlsx.git",
-                "reference": "e8bbe7f682d4ffa1a99d4094d1c0ffcf5b82a77a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/shuchkin/simplexlsx/zipball/e8bbe7f682d4ffa1a99d4094d1c0ffcf5b82a77a",
-                "reference": "e8bbe7f682d4ffa1a99d4094d1c0ffcf5b82a77a",
-                "shasum": ""
-            },
-            "require": {
-                "ext-libxml": "*",
-                "ext-mbstring": "*",
-                "ext-simplexml": "*",
-                "ext-zlib": "*",
-                "php": ">=5.5"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/SimpleXLSX.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sergey Shuchkin (SMSPILOT)",
-                    "email": "sergey.shuchkin@gmail.com",
-                    "homepage": "https://github.com/shuchkin"
-                }
-            ],
-            "description": "Parse and retrieve data from Excel XLSx files. MS Excel 2007 workbooks PHP reader.",
-            "homepage": "https://github.com/shuchkin/simplexlsx",
-            "keywords": [
-                "backend",
-                "excel",
-                "parser",
-                "php",
-                "xlsx"
-            ],
-            "support": {
-                "issues": "https://github.com/shuchkin/simplexlsx/issues",
-                "source": "https://github.com/shuchkin/simplexlsx/tree/1.0.18"
-            },
-            "time": "2022-10-13T13:22:12+00:00"
         },
         {
             "name": "symfony/console",
@@ -7739,16 +7686,16 @@
         },
         {
             "name": "spatie/laravel-ignition",
-            "version": "1.6.1",
+            "version": "1.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-ignition.git",
-                "reference": "2b79cf6ed40946b64ac6713d7d2da8a9d87f612b"
+                "reference": "d6e1e1ad93abe280abf41c33f8ea7647dfc0c233"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-ignition/zipball/2b79cf6ed40946b64ac6713d7d2da8a9d87f612b",
-                "reference": "2b79cf6ed40946b64ac6713d7d2da8a9d87f612b",
+                "url": "https://api.github.com/repos/spatie/laravel-ignition/zipball/d6e1e1ad93abe280abf41c33f8ea7647dfc0c233",
+                "reference": "d6e1e1ad93abe280abf41c33f8ea7647dfc0c233",
                 "shasum": ""
             },
             "require": {
@@ -7825,7 +7772,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-10-26T17:39:54+00:00"
+            "time": "2022-12-08T15:31:38+00:00"
         },
         {
             "name": "theseer/tokenizer",

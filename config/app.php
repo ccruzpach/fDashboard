@@ -195,10 +195,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        /*
-         * Front-end template providers
-         */
-
     ],
 
     /*

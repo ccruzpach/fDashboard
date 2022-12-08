@@ -1,9 +1,0 @@
-// $url = 'https://www.sec.gov/corpfin/division-of-corporation-finance-standard-industrial-classification-sic-code-list';
-// $url = "https://www.sec.gov/files/company_tickers.json";
-// To get list of all fillings by company -- KEY!!!!
-// https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json
-// To extract SIC number for ticker
-// https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000861289&owner=include&count=40&hidefilings=0
-//THIS SEARCH GIVES YOU EVERYTHING YOU NEED!
-//https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001058027&owner=include&count=40&hidefilings=0
-
