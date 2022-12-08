@@ -1,27 +1,81 @@
-<?php
+<?php 
 
-// require public_path('EdgarDataProcessor.php');
-// require public_path('EdgarDataRetrival.php');
-
-// require app_path('Services/htmlParsingHelpers.php');
-// dd(getHtmlDocument('320193', '10-K', 20050101));
+require_once app_path('Services/6.getIndustryInformation.php');
+ini_set('max_execution_time', 8000);
 
 
-require app_path('Services/extractEdgarFillingsUrls.php');
-
-// dd(getAllFillingsListByCompany('320193', 20050101));
+$url = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001679788&type=&dateb=&owner=include&start=0&count=10";
 
 
-dd(getFilingsHtmlsUrls('320193', '10-K', 20050101));
-// dd(getFillingsXlsUrls('320193', '10-K', 20050101))
+// Apple    320193
+// AMD      002488
+// PFE      078003
+$cikNumber = 78003;
 
-// // $sample = $r->getHtmlContent($r->createSearchUrl('320193', '10-K', 20050101));
-// // $sample = $r->getFillingDates('320193', '8-K', 20050101);
-// $sample = $r->getAllFillingsListByCompany('320193', 20050101);
+//Gracias82@
+// dd(getSICNumberbyCompany($cikNumber));
 
-// // $sample = $r->getFilingsHtmlsUrls('320193', '8-K', 20050101);
-// // $sample = $r->getFillingsXlsUrls('320193', '10-K', 20050101);
-// // $r->downloadExcelFillings('320193', '10-K', 20050101);
 
-// dd($sample);
+function getCIKCodes()
+{
+    return DB::select('SELECT cik_number FROM companies');
+}
+$cikCodes = getCIKCodes();
 
+$sicCodes = [];
+
+for ($i = 0; $i < 11642; $i++)
+{
+    $sicCodes[] = getSICNumberbyCompany($cikCodes[$i]->cik_number);
+}
+
+// // foreach ($cikCodes as $cik)
+// // {
+// //     $sicCodes[] = getSICNumberbyCompany($cikNumber);
+// // }
+
+file_put_contents('cik_sic_data.json', json_encode($sicCodes));
+echo "Job done succesfully";
+
+
+
+
+
+?>
+
+{{-- <!DOCTYPE html>
+
+<title>Document</title>
+<link rel="stylesheet" href="/app.css">
+
+<body>
+
+    <form action="/allFillings" method="GET">
+        <label for="search">Search</label>
+        <input type="text" id="search" name="search">
+    </form>
+    <div style="overflow-y:auto; height: 450px; width: 600px;overflow-wrap: break-word;">
+        <table>
+            <ol> --}}
+
+                <?php
+                    //dd(route('allFillings'));
+                    
+                    // for ($i = 0; $i < count($allFillings); $i++)
+                    // {
+                    //     echo "<li>$allFillings[$i][0]</li>";
+                    // }
+                    
+                ?>
+
+                {{-- @foreach ($allFillings as $filling)
+                {
+                    <li href="$filling[0]">{{ $filling[1] }}</li>;
+                }
+                @endforeach --}}
+            {{-- </ol>
+        </table>
+    </div>
+
+
+</body> --}}

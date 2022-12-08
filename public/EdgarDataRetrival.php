@@ -8,22 +8,24 @@ use Illuminate\Filesystem;
 
 class EDGARDataRetriever
 {
+    public $action;
+    public $cikNumber;
+    public $fillingType;
+    public $fromDate;
+
     // SECTION
     // CREATE URLS AND RETRIEVE HTML DATA FROM URL
 
-    public function createSearchUrl(string $cikNumber, string $fillingType, $fromDate = null)
+    public function createSearchUrl(string $cikNumber, $fillingType, $fromDate)
     {
         for ($i = 0; strlen($cikNumber) < 10; $i++) {
             $cikNumber = '0' . $cikNumber;
         }
-
         //owner=include ====> gets forms 3, 4, and 5;
-        //datea=$fromDate
-
-        return "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=$cikNumber&type=$fillingType&dateb=&owner=include&count=100&search_text=";
+        return "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=$cikNumber&type=$fillingType&datea=$fromDate&start=&output=html&count=100&owner=excluded";
     }
 
-    public function getHtmlContent(string $url)
+    public function getEdgarData(string $url)
     {
         $agent = "Mozilla/5.0 (X11; Linux x86_64; rv:60.0)";
 
@@ -34,47 +36,31 @@ class EDGARDataRetriever
 
         return curl_exec($ch);
     }
-  function extractDOM($htmlSource)
-    {
-        $domDocument = new DOMDocument();
-        $domDocument->validateOnParse = true;
-        @$domDocument->loadHTML($htmlSource);
-
-        return $domDocument;
-    }
-    
-    public function getHtmlDocument($cikNumber, $fillingType, $fromDate)
-    {
-        return $this->getHtmlContent($this->createSearchUrl($cikNumber, $fillingType, $fromDate));
-    }
-
-    function extracHtmlByTag($domDocument, $htmlTag)
-    {
-        return $domDocument->getElementsByTagName($htmlTag);
-    }
-
-    public function getHtmlTags($htmlDocument, $htmlTag)
-    {
-        return $this->extracHtmlByTag($this->extractDOM($htmlDocument), $htmlTag);
-    }
 
     // SECTION
     // PARSE HTML EXTRACT SPECIFIC HTML TAGS/ATTRIBUTES
 
-  
-
-    public function getFillingDates(string $cikNumber, string $fillingType, $fromDate)
+    public function parseDOM($htmlSource, $htmlTag = 'tr')
     {
-        $edgarData = $this->getHtmlDocument($cikNumber, $fillingType, $fromDate);        
-        $tRows = $this->getHtmlTags($edgarData, 'tr');
+        $dom = new DOMDocument();
+        $dom->validateOnParse = true;
+        @$dom->loadHTML($htmlSource);
+
+        return $dom->getElementsByTagName($htmlTag);
+    }
+
+    function getFillingDates($cik, $fillingType)
+    {
+        $edgarData = $this->getEdgarData($this->createSearchUrl($cik, $fillingType, 20000101));
+
+        $tRows = $this->parseDOM($edgarData, 'tr');
         $fillingList = [];
 
         foreach ($tRows as $row) {
             $row = explode("\n", trim($row->textContent));
             $tempArray = [];
 
-            for ($i = 0; $i < count($row); $i++) 
-            {
+            for ($i = 0; $i < count($row); $i++) {
                 if (($i == 3 or $i == 4) and preg_match("/\s\d{4}-\d{2}-\d{2}/", $row[$i])) {
                     $tempArray[] = trim($row[$i]);
                 }
@@ -86,7 +72,8 @@ class EDGARDataRetriever
 
     public function extractLinksReferences(string $htmlSource)
     {
-        $links = $this->getHtmlTags($htmlSource, 'a');
+        $links = $this->parseDOM($htmlSource, 'a');
+
         $selectedLinks = [];
 
         foreach ($links as $link) {
@@ -98,6 +85,7 @@ class EDGARDataRetriever
     public function createCikLinks($htmlSource)
     {
         $links = $this->extractLinksReferences($htmlSource);
+
         $selectedLinks = [];
 
         for ($i = 0; $i < count($links); $i++) {
@@ -116,9 +104,13 @@ class EDGARDataRetriever
         return $selectedLinks;
     }
 
+    // SECTION
+    // CREATES ACCESSABLE/DOWNLOADABLE LINKS FROM PARSED HTML
+
     public function createXlsLinks($htmlSource)
     {
         $links = $this->extractLinksReferences($htmlSource);
+
         $selectedLinks = [];
 
         foreach ($links as $link) {
@@ -130,6 +122,7 @@ class EDGARDataRetriever
     function createHtmlLinks($htmlSource)
     {
         $links = $this->extractLinksReferences($htmlSource);
+
         $selectedLinks = [];
 
         foreach ($links as $link) {
@@ -141,6 +134,7 @@ class EDGARDataRetriever
     function createHtmlFillingLink($htmlSource)
     {
         $links = $this->extractLinksReferences($htmlSource);
+
         $selectedLinks = '';
 
         for ($j = 0; $j < count($links); $j++) {
@@ -155,12 +149,13 @@ class EDGARDataRetriever
     //SECTION
     // EXTRACT ACCESSIBLE/DOWNLOADABLE LINKS FOR EDGAR FILLINGS
 
+    //TO EXTRACT LINKS FOR ALL FI
     public function getAllFillingsListByCompany(string $cikNumber, int $fromDate)
     {
-        $edgarData = $this->getHtmlDocument($cikNumber, '', $fromDate);
-        $tRows = $this->getHtmlTags($edgarData, 'tr');
+        $edgarData = $this->getEdgarData($this->createSearchUrl($$cikNumber, '', $fromDate));
+        $tRows = $this->parseDOM($edgarData, 'tr');
         $fillingList = [];
-        $tDocLinks = $this->getHtmlTags($edgarData, 'a');
+        $tDocLinks = $$this->parseDOM($edgarData, 'a');
         $fillingLinks = [];
 
         foreach ($tDocLinks as $link) {
@@ -176,8 +171,8 @@ class EDGARDataRetriever
             for ($i = 0; $i < count($row); $i++) {
                 if (($i == 0)
                     or
-                    ($i == 3 or $i == 4) and preg_match("/\s\d{4}-\d{2}-\d{2}/", $row[$i]))
-                {
+                    ($i == 3 or $i == 4) and preg_match("/\s\d{4}-\d{2}-\d{2}/", $row[$i])
+                ) {
                     $tempArray[] = trim($row[$i]);
                 }
             }
@@ -188,12 +183,12 @@ class EDGARDataRetriever
 
     public function getFilingsHtmlsUrls(string $cikNumber, string $fillingType, int $fromDate)
     {
-        $edgarData = $this->getHtmlDocument($cikNumber, $cikNumber, $fromDate);
-        $results = $this->createHtmlLinks($edgarData);
+        $results = $this->getEdgarData($this->createSearchUrl($cikNumber, $fillingType, $fromDate));
+        $results = $this->createHtmlLinks($results);
         $newResults = [];
 
         for ($i = 0; $i < count($results); $i++) {
-            $result = $this->getHtmlContent($results[$i]);
+            $result = $this->getEdgarData($results[$i]);
             $result = $this->createHtmlFillingLink($result);
             $newResults[] = $result;
         }
@@ -202,13 +197,13 @@ class EDGARDataRetriever
 
     public function getFillingsXlsUrls(string $cikNumber, string $fillingType, int $fromDate)
     {
-        $results = $this->getHtmlDocument($cikNumber, $fillingType, $fromDate);        
+        $results = $this->getEdgarData($this->createSearchUrl($cikNumber, $fillingType, $fromDate));
         $results = $this->createCikLinks($results);
-        $dates = $this->getFillingDates($cikNumber, $fillingType, $fromDate);
+        $dates = $this->getFillingDates($cikNumber, $fillingType);
         $newResults = [];
 
         for ($i = 0; $i < count($results); $i++) {
-            $result = $this->getHtmlContent($results[$i]);
+            $result = $this->getEdgarData($results[$i]);
             $result = $this->createXlsLinks($result);
             $newResults[] = [$dates[$i][0], $result[0]];
         }
@@ -250,27 +245,12 @@ class EDGARDataRetriever
         echo "Files successfully saved to disks.";
     }
 
-
-
-    /*
-    *
-    *
-    * TESTED UP TO THIS POINT!
-    *
-    *
-    *
-    */
-
-
-
-
     // SECTION
     // GET SECTOR AND INDUSTRY INFORMATION
 
     public function getSICData($url)
     {
-        $results = $this->extractDOM($this->getHtmlContent($url));
-        $results = $this->extracHtmlByTag($results, 'tr');
+        $results = $this->parseDOM($this->getEdgarData($url));
 
         $newResults = [];
 
@@ -296,49 +276,6 @@ class EDGARDataRetriever
         $newResults = json_encode($newResults);
         return $newResults;
     }
-
-    //TODO: THIS FUNCTION DOES NOT WORK PROPERLY
-    public function getsCompanyListByIndustry()
-    {
-        $sample = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&SIC=3571&owner=include&start=0&count=100&hidefilings=0';
-        $url1 = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&SIC=100&owner=include&match=starts-with&start=40&count=100&hidefilings=0';
-        $url2 = 'https://www.sec.gov/cgi-bin/browse-edgar?company=&match=starts-with&filenum=&State=&Country=&SIC=100&myowner=exclude&action=getcompany';
-
-        $r = new EDGARDataRetriever();
-        $urlData = $r->getHtmlContent($url1);
-        $results2 = $r->parseDOM($urlData, 'span');
-        $results = $r->parseDOM($urlData);
-        $companies = [];
-        $sicNumber = "";
-
-        for ($i = 0; $i < count($results); $i++) {
-
-            $result = explode("\n", trim($results[$i]->textContent));
-            $tempList = [];
-
-            for ($j = 0; $j < count($result); $j++) {
-                $tempList[] = trim($result[$j]);
-            }
-            $companies[] = $tempList;
-        }
-
-        for ($i = 0; $i < count($results2); $i++) {
-            $r = $results2[$i]->textContent;
-            preg_match('(\d+)', $r, $sicNumber);
-            // $sicInfo = $industry;
-
-            break;
-        }
-
-        $sicNumber = implode($sicNumber);
-        array_unshift($companies, $sicNumber);
-
-        $path = storage_path('/sic');
-        File::ensureDirectoryExists($path);
-        file_put_contents($path . $sicNumber . ".json", json_encode($companies));
-
-        dd($companies);
-    }
 }
 
 // Apple    320193
@@ -348,7 +285,7 @@ class EDGARDataRetriever
 //SAMPLES OF DOWNLOAD PROCESS FOR FILES (ONLY LAST METHOD IS NECESSARY):
 // $r = new EDGARDataRetriever();
 // $url = $r->createSearchURL('2488', '10-K', 20010101);
-// $results = $r->getHtmlContent($url);
+// $results = $r->getEdgarData($url);
 // $results = createCikLinks($results);
 // $results = $r->getFillingsUrls('320193', '10-K', 20050101);
 // $results = $r->downloadExcelFillings('078003', '10-K', 20050101);

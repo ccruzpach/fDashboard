@@ -1,16 +1,20 @@
 <?php
 
-require app_path('Services/1.urlContentProvider.php');
+require_once app_path('Services/1.urlContentProvider.php');
 
-function getHtmlDocument($cikNumber, $fillingType, $fromDate)
+
+function extracHtmlByTag($htmlDocument, $htmlTag)
+{
+    return $htmlDocument->getElementsByTagName($htmlTag);
+}
+
+
+function getHtmlDocument($cikNumber, $fillingType, $fromDate = 20100101)
 {
     return getHtmlContent(createSearchUrl($cikNumber, $fillingType, $fromDate));
 }
 
-function extracHtmlByTag($domDocument, $htmlTag)
-{
-    return $domDocument->getElementsByTagName($htmlTag);
-}
+
 
 function getHtmlTags($htmlDocument, $htmlTag)
 {

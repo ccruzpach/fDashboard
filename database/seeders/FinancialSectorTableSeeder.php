@@ -15,7 +15,7 @@ class FinancialSectorTableSeeder extends Seeder
      */
     public function run()
     {
-        $json = file_get_contents(public_path('SICData.json'));
+        $json = file_get_contents(storage_path('SICData.json'));
         $sectors = json_decode($json, true);
 
         foreach ($sectors as $sector)

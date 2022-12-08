@@ -1,16 +1,21 @@
 <?php
 
-require app_path('Services/2.htmlParsingHelpers.php');
+require_once app_path('Services/2.htmlParsingHelpers.php');
 
-function extractLinksReferences(string $htmlSource)
+function extractLinksReferences(string $htmlSource, $htmlTag = 'a', $htmlAttribute = null)
 {
-    $links = getHtmlTags($htmlSource, 'a');
+    $links = getHtmlTags($htmlSource, $htmlTag);
     $selectedLinks = [];
 
-    foreach ($links as $link) {
-        $selectedLinks[] = $link->getAttribute('href');
+    if ($htmlAttribute)
+    {
+        foreach ($links as $link) {
+            $selectedLinks[] = $link->getAttribute($htmlAttribute);
+        }
+        return $selectedLinks;
+    } else {
+        return $links;
     }
-    return $selectedLinks;
 }
 
 function createCikLinks($htmlSource)

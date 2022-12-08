@@ -13,11 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('financial_industries', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('sector_id')->constrained('financial_sectors');
-            $table->foreignId('sic_code')->constrained('company_classifications');
-            $table->text('industry');
+        Schema::create('company_classifications', function (Blueprint $table) {
+            $table->string('sic_number')->primary();
+            $table->foreignId('cik_number')->constrained('companies');
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('financial_industries');
+        Schema::dropIfExists('company_classifications');
     }
 };
