@@ -48,16 +48,16 @@ function getSICNumberbyCompany($cikNumber)
 //CONFIRMED OPERATIONAL
 function getSICCodes()
 {
+    ini_set('max_execution_time', 15000);
     $cikCodes = getCIKCodesfromDB();
 
     $sicCodes = [];
-
 
     for ($i = 0; $i < count($cikCodes); $i++) {
         $sicCodes[] = getSICNumberbyCompany($cikCodes[$i]->cik_number);
         break;
     }
-
+    
     file_put_contents('cik_sic_data.json', json_encode($sicCodes));
     echo "SIC codes extraction succesful";
 

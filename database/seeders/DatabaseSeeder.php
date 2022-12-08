@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\CompanyClassification;
+use App\Models\Company;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,11 +16,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->call(Company::class);
         // $this->call(CompanyTableSeeder::class);
         // $this->call(FinancialSectorTableSeeder::class);
+        // $this->call(CompanyClassification::class);
         // $this->call(FinancialIndustryTableSeeder::class);
-        $this->call(CompanyClassification::class);
-
 
 
         // \App\Models\User::factory(10)->create();
