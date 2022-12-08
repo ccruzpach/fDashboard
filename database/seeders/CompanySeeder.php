@@ -15,16 +15,31 @@ class CompanySeeder extends Seeder
      */
     public function run()
     {
-        $url = "https://www.sec.gov/files/company_tickers.json";
-        $json = file_get_contents($url);
-        $companies = json_decode($json, true);
+        $cikURL = "https://www.sec.gov/files/company_tickers.json";
+        $cikJson = file_get_contents($cikURL);
+        $companies = json_decode($cikJson, true);
 
-        foreach ($companies as $company) {
+        $sicJson = file_get_contents(storage_path('cik_sic_data.json'));
+        $sicNumbers = json_decode($sicJson, true);
+
+        foreach ($companies as $company) 
+        {
+            foreach ($sicNumbers as $numbers)
+            {
+                foreach ($numbers as $cik => $sic)
+                {
+                    if (strval($cik) == $company['cik_str'])
+                    {
+                        return $sic;
+                    }
+                }
+            }
+
             Company::query()->updateOrCreate([
                 'cik_number' => $company['cik_str'],
+                'sic_number' => $sic,
                 'stock_symbol' => $company['ticker'],
                 'company_title' => $company['title']
-
             ]);
         }
     }

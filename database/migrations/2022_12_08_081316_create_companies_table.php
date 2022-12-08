@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('cik_number');
+            $table->string('sic_number');
             $table->string('stock_symbol');
             $table->string('company_title');
             $table->timestamps();

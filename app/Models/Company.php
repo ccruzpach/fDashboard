@@ -13,7 +13,7 @@ class Company extends Model
 
     protected $fillable = [
         'cik_number',
+        'sic_number',
         'stock_symbol',
-        'company_title'
-    ];
+        'company_title'];
 }

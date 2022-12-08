@@ -9,7 +9,7 @@ class Sector extends Model
 {
     use HasFactory;
     
-    protected $table = 'financial_sectors';
+    protected $table = 'sectors';
     
     protected $fillable = [
         'sector'];

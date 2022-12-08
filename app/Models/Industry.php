@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Industry extends Model
 {
     use HasFactory;
-    
-    protected $table = 'financial_industries';
-    
+
+    protected $table = 'industries';
+
     protected $fillable = [
-      'sector_id', 'sic_code', 'industry'];
+      'sector_id',
+      'sic_code',
+      'industry'];
 }

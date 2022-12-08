@@ -1,27 +1,18 @@
 <?php 
 
-require_once app_path('Services/6.getIndustryInformation.php');
-class CompanyClassificationTableSeeder extends Seeder
-{
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        $json = file_get_contents(storage_path('cik_sic_data.json'));
-        $companies = json_decode($json, true);
+$cikJson = file_get_contents(storage_path('cik_sic_data.json'));
+$sicNumbers = json_decode($cikJson, true);
 
-        foreach ($companies as $company)
-        {
-            CompanyClassification::query()->updateOrCreate([
-                'sic_number' => $company['cik_str'],
-                'cik_number' => $company['cik_number']
-            ]);
-        }
+foreach ($sicNumbers as $numbers)
+{
+    foreach ($numbers as $cik => $sic)
+    {
+        dd($cik, $sic);
     }
 }
+
+// dd($sicNumbers[0]);
+
 
 
 
