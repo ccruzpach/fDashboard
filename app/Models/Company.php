@@ -11,12 +11,11 @@ class Company extends Model
     use HasFactory;
 
     protected $table = 'companies';
-    
+
     protected $fillable = [
         'cik_number',
         'stock_symbol',
-        'company_title'];
-
-
+        'company_title'
+    ];
 
 }

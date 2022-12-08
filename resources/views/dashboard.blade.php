@@ -1,7 +1,7 @@
 <?php 
 
 require_once app_path('Services/6.getIndustryInformation.php');
-ini_set('max_execution_time', 8000);
+ini_set('max_execution_time', 15000);
 
 
 $url = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001679788&type=&dateb=&owner=include&start=0&count=10";
@@ -12,30 +12,34 @@ $url = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=000167978
 // PFE      078003
 $cikNumber = 78003;
 
-//Gracias82@
-// dd(getSICNumberbyCompany($cikNumber));
 
 
-function getCIKCodes()
+
+
+$cikCodes = getCIKCodesfromDB();
+
+
+function getSICCodes()
 {
-    return DB::select('SELECT cik_number FROM companies');
-}
-$cikCodes = getCIKCodes();
+$cikCodes = getCIKCodesfromDB();
 
 $sicCodes = [];
 
-for ($i = 0; $i < 11642; $i++)
+
+for ($i = 0; $i < count($cikCodes); $i++)
 {
     $sicCodes[] = getSICNumberbyCompany($cikCodes[$i]->cik_number);
+    break;
 }
 
-// // foreach ($cikCodes as $cik)
-// // {
-// //     $sicCodes[] = getSICNumberbyCompany($cikNumber);
-// // }
-
 file_put_contents('cik_sic_data.json', json_encode($sicCodes));
-echo "Job done succesfully";
+echo "SIC codes extraction succesful";
+
+return $sicCodes;
+}
+
+
+dd(getSICCodes());
 
 
 
@@ -58,7 +62,7 @@ echo "Job done succesfully";
         <table>
             <ol> --}}
 
-                <?php
+<?php
                     //dd(route('allFillings'));
                     
                     // for ($i = 0; $i < count($allFillings); $i++)
@@ -68,12 +72,12 @@ echo "Job done succesfully";
                     
                 ?>
 
-                {{-- @foreach ($allFillings as $filling)
+{{-- @foreach ($allFillings as $filling)
                 {
                     <li href="$filling[0]">{{ $filling[1] }}</li>;
-                }
-                @endforeach --}}
-            {{-- </ol>
+}
+@endforeach --}}
+{{-- </ol>
         </table>
     </div>
 

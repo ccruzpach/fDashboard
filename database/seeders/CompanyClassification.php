@@ -2,11 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\CompanyClassification;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\CompanyClassification;
 
-class CompanyClassification extends Seeder
+
+class CompanyClassificationTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,14 +16,14 @@ class CompanyClassification extends Seeder
      */
     public function run()
     {
-        $companies = [];
+        $json = file_get_contents(storage_path('SICData.json'));
+        $companies = json_decode($json, true);
 
         foreach ($companies as $company)
         {
             CompanyClassification::query()->updateOrCreate([
                 'sic_number' => $company['cik_str'],
-
-
+                'cik_number' => $company['cik_number']
             ]);
         }
     }

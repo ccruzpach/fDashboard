@@ -37,18 +37,37 @@ function getSICNumberbyCompany($cikNumber)
     $results = extracHtmlByTag(extractDOM(getHtmlDocument($cikNumber, '')), 'a');
     $sic = '';
 
-    for ($i = 0; $i < count($results); $i++)
-    {
-        if ($i == 9)
-        {
+    for ($i = 0; $i < count($results); $i++) {
+        if ($i == 9) {
             $sic = $results[$i]->textContent;
             break;
         }
     }
     return array($cikNumber => $sic);
 }
+//CONFIRMED OPERATIONAL
+function getSICCodes()
+{
+    $cikCodes = getCIKCodesfromDB();
+
+    $sicCodes = [];
 
 
+    for ($i = 0; $i < count($cikCodes); $i++) {
+        $sicCodes[] = getSICNumberbyCompany($cikCodes[$i]->cik_number);
+        break;
+    }
+
+    file_put_contents('cik_sic_data.json', json_encode($sicCodes));
+    echo "SIC codes extraction succesful";
+
+    return $sicCodes;
+}
+//CONFIRMED OPERATIONAL
+function getCIKCodesfromDB()
+{
+    return DB::select('SELECT cik_number FROM companies');
+}
 
 
 
@@ -83,8 +102,7 @@ function getsCompanyListByIndustry($sic, $pageCount = 0)
     $dom2 = extracHtmlByTag($dom2, 'tr');
     $companies = [];
 
-    for ($i = 0; $i < count($dom2); $i++) 
-    {
+    for ($i = 0; $i < count($dom2); $i++) {
 
         $result = explode("\n", trim($dom2[$i]->textContent));
         $tempList = [];
@@ -102,10 +120,10 @@ function getsCompanyListByIndustry($sic, $pageCount = 0)
         $sic = implode($sic);
         array_shift($companies); // to delete the header;
         array_unshift($companies, $sic);
-    
+
         $path = storage_path("/sic/$sic/");
         File::ensureDirectoryExists($path);
-        file_put_contents($path . $sic . "_page_" . $pageCount. ".json", json_encode($companies));
-        echo "List of companies by industry has been downloaded successfully"; 
+        file_put_contents($path . $sic . "_page_" . $pageCount . ".json", json_encode($companies));
+        echo "List of companies by industry has been downloaded successfully";
     }
 }
