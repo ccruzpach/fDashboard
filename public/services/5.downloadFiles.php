@@ -1,6 +1,6 @@
 <?php
 
-require_once app_path('Services/4.extractEdgarFillingsUrls.php');
+require_once public_path('services/4.extractEdgarFillingsUrls.php');
 
 function downloadFile($url, $downloadPath, $agent = "Mozilla/5.0 (X11; Linux x86_64; rv:60.0)")
 {

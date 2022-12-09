@@ -1,23 +1,6 @@
 <?php 
 
-$cikJson = file_get_contents(storage_path('cik_sic_data.json'));
-$sicNumbers = json_decode($cikJson, true);
-
-foreach ($sicNumbers as $numbers)
-{
-    foreach ($numbers as $cik => $sic)
-    {
-        dd($cik, $sic);
-    }
-}
-
-// dd($sicNumbers[0]);
-
-
-
-
-
-
+require public_path('/services/6.getIndustryInformation.php');
 
 ?>
 

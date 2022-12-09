@@ -1,6 +1,6 @@
 <?php
 
-require_once app_path('Services/2.htmlParsingHelpers.php');
+require_once public_path('services/2.htmlParsingHelpers.php');
 
 function extractLinksReferences(string $htmlSource, $htmlTag = 'a', $htmlAttribute = null)
 {

@@ -1,6 +1,6 @@
 <?php
 
-require_once app_path('Services/1.urlContentProvider.php');
+require_once public_path('services/1.urlContentProvider.php');
 
 
 function extracHtmlByTag($htmlDocument, $htmlTag)

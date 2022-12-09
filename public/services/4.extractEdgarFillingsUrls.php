@@ -1,6 +1,6 @@
 <?php
 
-require_once app_path('Services/3.createUrls.php');
+require_once public_path('services/3.createUrls.php');
 
 function getFillingDates(string $cikNumber, string $fillingType, $fromDate)
 {
