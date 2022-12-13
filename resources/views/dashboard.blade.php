@@ -2,6 +2,18 @@
 
 require public_path('/services/6.getIndustryInformation.php');
 
+use App\Models\CompanyIndustry;
+use App\Models\Company;
+
+// $cIndustry = CompanyIndustry::where('cik_number', 34088)->get();
+
+$company = Company::where('stock_symbol', 'AMD')->get();
+// $cIndustry = CompanyIndustry::where('id', $company->company_industry_id)->get();
+
+dd($company->company_industry_id);
+
+
+
 ?>
 
 {{-- <!DOCTYPE html>

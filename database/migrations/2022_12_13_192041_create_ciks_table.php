@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('classifications', function (Blueprint $table) {
+        Schema::create('ciks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('industry_id')->constrained('industries');
-            $table->string('sic_code')->nullable();
+            $table->foreignId('sic_id')->constrained('sics');
+            $table->string('cik_number');            
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('classifications');
+        Schema::dropIfExists('ciks');
     }
 };

@@ -15,4 +15,15 @@ class Industry extends Model
         'industry_name',
         'sic_code'
     ];
+
+    public function sector()
+    {
+        return $this->belongsTo(Sector::class);
+    }
+
+    public function classification()
+    {
+        return $this->hasMany(Sic::class);
+    }
+
 }

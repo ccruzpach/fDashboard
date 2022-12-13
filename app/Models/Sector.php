@@ -14,4 +14,11 @@ class Sector extends Model
     protected $fillable = [
         'sector_name'
     ];
+
+    public function industries()
+    {
+        return $this->hasMany(Industry::class);
+    }
+
+
 }

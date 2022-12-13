@@ -23,7 +23,7 @@ class CompanySeeder extends Seeder
         foreach ($companies as $company)
         {
             $cik = $company['cik_str'];
-            $industryQuery = DB::select("SELECT id FROM company_industries WHERE cik_number = $cik");
+            $industryQuery = DB::select("SELECT id FROM ciks WHERE cik_number = $cik");
 
             foreach ($industryQuery as $id) {
                 foreach ($id as $key => $value) {

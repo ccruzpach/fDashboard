@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             // $table->string('company_industry_id');
-            $table->foreignId('company_industry_id')->constrained('company_industries');
+            $table->foreignId('company_industry_id')->constrained('ciks');
             $table->string('stock_symbol');
             $table->string('company_title');
             $table->timestamps();

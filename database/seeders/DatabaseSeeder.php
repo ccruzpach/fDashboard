@@ -18,14 +18,15 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
 
-
-            //OKAY TABLES
             
             SectorSeeder::class,
             IndustrySeeder::class,
-            ClassificationSeeder::class,
-            CompanyIndustrySeeder::class,
+            SicSeeder::class,
+            // ClassificationSeeder::class,
+            // CompanyIndustrySeeder::class,
+            CikSeeder::class,
             CompanySeeder::class,
+       
 
 
 

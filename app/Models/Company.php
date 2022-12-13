@@ -15,4 +15,9 @@ class Company extends Model
         'stock_symbol',
         'company_title'
     ];
+
+    public function companyIndustry()
+    {
+        return $this->belongsTo(Cik::class);
+    }
 }

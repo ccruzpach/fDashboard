@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Classification;
+use App\Models\Cik;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ClassificationSeeder extends Seeder
+class CikSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -23,27 +23,22 @@ class ClassificationSeeder extends Seeder
             foreach ($cikInds as $cik => $sic) {
                 (preg_match("([a-z])i", $sic)) ? $sic = null : $sic;
 
-                if ($sic != null)
-                {
-                    $indIdQuery = DB::select("SELECT id FROM industries WHERE sic_code = $sic");
-                    
-                    foreach ($indIdQuery as $id) {
+                if ($sic != null) {
+                    $sicQuery = DB::select("SELECT id FROM sics WHERE sic_code = $sic");
+
+                    foreach ($sicQuery as $id) {
                         foreach ($id as $key => $value) {
-                            $industryId = $value;
+                            $sicId = $value;
                         }
                     }
-                    Classification::query()->updateOrCreate([
-                        'sic_code' => $sic,
-                        'industry_id' => $industryId
+
+                    Cik::query()->updateOrCreate([
+                        'sic_id' => $sicId,
+                        'cik_number' => $cik,
                     ]);
                 } else {
                     continue;
                 }
-
-                // Classification::query()->updateOrCreate([
-                //     'sic_code' => $sic,
-                //     'industry_id' => $industryId
-                // ]);
             }
         }
     }

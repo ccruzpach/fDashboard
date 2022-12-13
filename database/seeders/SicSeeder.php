@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\CompanyIndustry;
+use App\Models\Sic;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CompanyIndustrySeeder extends Seeder
+class SicSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -23,18 +23,18 @@ class CompanyIndustrySeeder extends Seeder
             foreach ($cikInds as $cik => $sic) {
                 (preg_match("([a-z])i", $sic)) ? $sic = null : $sic;
 
-                if ($sic != null) {
-                    $classificationQuery = DB::select("SELECT id FROM classifications WHERE sic_code = $sic");
-
-                    foreach ($classificationQuery as $id) {
+                if ($sic != null)
+                {
+                    $indIdQuery = DB::select("SELECT id FROM industries WHERE sic_code = $sic");
+                    
+                    foreach ($indIdQuery as $id) {
                         foreach ($id as $key => $value) {
-                            $classificationId = $value;
+                            $industryId = $value;
                         }
                     }
-
-                    CompanyIndustry::query()->updateOrCreate([
-                        'classification_id' => $classificationId,
-                        'cik_number' => $cik,
+                    Sic::query()->updateOrCreate([
+                        'sic_code' => $sic,
+                        'industry_id' => $industryId
                     ]);
                 } else {
                     continue;
