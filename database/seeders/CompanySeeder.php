@@ -32,7 +32,7 @@ class CompanySeeder extends Seeder
             }
 
             Company::query()->updateOrCreate([
-                'company_industry_id' => $industryId,
+                'cik_id' => $industryId,
                 'stock_symbol' => $company['ticker'],
                 'company_title' => $company['title']
 
