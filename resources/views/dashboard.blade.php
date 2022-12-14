@@ -1,6 +1,6 @@
 <?php 
 
-// require public_path('/services/downloadXlsxFillings.php');
+require public_path('/services/Queries.php');
 
 use App\Models\Cik;
 use App\Models\Sic;
@@ -10,19 +10,21 @@ use App\Models\Company;
 
 ?>
 
+
+
 <!DOCTYPE html>
 
 <title>Document</title>
 <link rel="stylesheet" href="/app.css">
 
 <body>
-    <form action="" method="get">
-        <label for="search">Search</label>
-        <input type="text" id="search" name="search" placeholder="Company Symbol">
+    <form action="" method="get" style="margin: 30px auto; width: 310px">
+        <label for="search" style="margin-right: 2px;">Search Company</label>
+        <input type="text" id="search" name="search" placeholder="Symbol">
     </form>
 
     <?php
-        $companySymbol = strtoupper($_GET['search']);
+        $companySymbol = strtoupper($_GET['search']);        
     ?>
 
     <div id="company_highlights" style="width: 1000px; margin: 30px auto ; border: 1px solid black; padding: 10px; border-radius: 15px;">
