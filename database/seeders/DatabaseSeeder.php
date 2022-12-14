@@ -22,8 +22,6 @@ class DatabaseSeeder extends Seeder
             SectorSeeder::class,
             IndustrySeeder::class,
             SicSeeder::class,
-            // ClassificationSeeder::class,
-            // CompanyIndustrySeeder::class,
             CikSeeder::class,
             CompanySeeder::class,
        

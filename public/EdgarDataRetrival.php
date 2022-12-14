@@ -49,26 +49,26 @@ class EDGARDataRetriever
         return $dom->getElementsByTagName($htmlTag);
     }
 
-    function getFillingDates($cik, $fillingType)
-    {
-        $edgarData = $this->getEdgarData($this->createSearchUrl($cik, $fillingType, 20000101));
+    // function getFillingDates($cik, $fillingType)
+    // {
+    //     $edgarData = $this->getEdgarData($this->createSearchUrl($cik, $fillingType, 20000101));
 
-        $tRows = $this->parseDOM($edgarData, 'tr');
-        $fillingList = [];
+    //     $tRows = $this->parseDOM($edgarData, 'tr');
+    //     $fillingList = [];
 
-        foreach ($tRows as $row) {
-            $row = explode("\n", trim($row->textContent));
-            $tempArray = [];
+    //     foreach ($tRows as $row) {
+    //         $row = explode("\n", trim($row->textContent));
+    //         $tempArray = [];
 
-            for ($i = 0; $i < count($row); $i++) {
-                if (($i == 3 or $i == 4) and preg_match("/\s\d{4}-\d{2}-\d{2}/", $row[$i])) {
-                    $tempArray[] = trim($row[$i]);
-                }
-            }
-            $fillingList[] = $tempArray;
-        }
-        return array_slice($fillingList, 5);
-    }
+    //         for ($i = 0; $i < count($row); $i++) {
+    //             if (($i == 3 or $i == 4) and preg_match("/\s\d{4}-\d{2}-\d{2}/", $row[$i])) {
+    //                 $tempArray[] = trim($row[$i]);
+    //             }
+    //         }
+    //         $fillingList[] = $tempArray;
+    //     }
+    //     return array_slice($fillingList, 5);
+    // }
 
     public function extractLinksReferences(string $htmlSource)
     {
@@ -248,7 +248,7 @@ class EDGARDataRetriever
     // SECTION
     // GET SECTOR AND INDUSTRY INFORMATION
 
-    public function getSICData($url)
+    public function getSICData2($url)
     {
         $results = $this->parseDOM($this->getEdgarData($url));
 

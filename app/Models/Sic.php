@@ -15,8 +15,8 @@ class Sic extends Model
         'sic_code',
     ];
 
-    public function industry()
-    {
-        return $this->belongsTo(Industry::class);
-    }
+    // public function industry()
+    // {
+    //     return $this->belongsTo(Industry::class);
+    // }
 }

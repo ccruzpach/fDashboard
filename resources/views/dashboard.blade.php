@@ -1,54 +1,38 @@
 <?php 
 
-require public_path('/services/6.getIndustryInformation.php');
+// require public_path('/services/downloadXlsxFillings.php');
 
-use App\Models\CompanyIndustry;
+use App\Models\Cik;
+use App\Models\Sic;
+use App\Models\Industry;
+use App\Models\Sector;
 use App\Models\Company;
-
-// $cIndustry = CompanyIndustry::where('cik_number', 34088)->get();
-
-$company = Company::where('stock_symbol', 'AMD')->get();
-// $cIndustry = CompanyIndustry::where('id', $company->company_industry_id)->get();
-
-dd($company->company_industry_id);
-
-
 
 ?>
 
-{{-- <!DOCTYPE html>
+<!DOCTYPE html>
 
 <title>Document</title>
 <link rel="stylesheet" href="/app.css">
 
 <body>
-
-    <form action="/allFillings" method="GET">
+    <form action="" method="get">
         <label for="search">Search</label>
-        <input type="text" id="search" name="search">
+        <input type="text" id="search" name="search" placeholder="Company Symbol">
     </form>
-    <div style="overflow-y:auto; height: 450px; width: 600px;overflow-wrap: break-word;">
-        <table>
-            <ol> --}}
 
-<?php
-                    //dd(route('allFillings'));
-                    
-                    // for ($i = 0; $i < count($allFillings); $i++)
-                    // {
-                    //     echo "<li>$allFillings[$i][0]</li>";
-                    // }
-                    
-                ?>
+    <?php
+        $companySymbol = strtoupper($_GET['search']);
+    ?>
 
-{{-- @foreach ($allFillings as $filling)
-                {
-                    <li href="$filling[0]">{{ $filling[1] }}</li>;
-}
-@endforeach --}}
-{{-- </ol>
-        </table>
+    <div id="company_highlights" style="width: 1000px; margin: 30px auto ; border: 1px solid black; padding: 10px; border-radius: 15px;">
+        <div style="display:flex; justify-content: space-between;">
+            <div>
+                <p>Company: <strong>{{ getCompanyName($companySymbol)->company_title }}</strong></p>
+            </div>
+            <div>
+                <p>Industry/Sector: <strong>{{ ucwords(strtolower(getCompanyIndustry(getCompanyName($companySymbol))->industry_name)) }} | {{ getCompanySector(getCompanyIndustry(getCompanyName($companySymbol)))->sector_name }}</strong></p>
+            </div>
+        </div>
     </div>
-
-
-</body> --}}
+</body>

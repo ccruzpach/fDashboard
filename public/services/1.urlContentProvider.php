@@ -32,3 +32,5 @@ function extractDOM($htmlSource)
 
     return $domDocument;
 }
+
+

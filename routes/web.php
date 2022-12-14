@@ -2,7 +2,8 @@
 
 use App\Http\Controllers\DashboardsController;
 use Illuminate\Support\Facades\Route;
-// require_once app_path('Services/6.getIndustryInformation.php');
+// require_once public_path('services/6.getIndustryInformation.php');
+// require_once public_path('services/5.downloadFiles.php');
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +31,13 @@ Route::get('allfillings', function () {
 Route::get('sicdata', function () {
     $url = 'https://www.sec.gov/corpfin/division-of-corporation-finance-standard-industrial-classification-sic-code-list';
 
-    return getSICData($url);
+    return getSicByIndustryList($url);
 })->name('sicdata');
 
 Route::get('industrycompanies', function () {
     return getsCompanyListByIndustry();
 })->name('industrycompanies');
+
+Route::get('downloadFillings', function () {
+    return downloadExcelFillings('320193', '10-K', 20050101);
+});

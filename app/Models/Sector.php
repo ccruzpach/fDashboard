@@ -15,10 +15,10 @@ class Sector extends Model
         'sector_name'
     ];
 
-    public function industries()
-    {
-        return $this->hasMany(Industry::class);
-    }
+    // public function industries()
+    // {
+    //     return $this->hasMany(Industry::class);
+    // }
 
 
 }

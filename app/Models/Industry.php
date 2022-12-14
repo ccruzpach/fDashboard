@@ -16,14 +16,14 @@ class Industry extends Model
         'sic_code'
     ];
 
-    public function sector()
-    {
-        return $this->belongsTo(Sector::class);
-    }
+    // public function sector()
+    // {
+    //     return $this->belongsTo(Sector::class);
+    // }
 
-    public function classification()
-    {
-        return $this->hasMany(Sic::class);
-    }
+    // public function classification()
+    // {
+    //     return $this->hasMany(Sic::class);
+    // }
 
 }

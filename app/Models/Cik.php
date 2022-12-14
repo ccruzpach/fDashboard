@@ -15,13 +15,13 @@ class Cik extends Model
         'cik_number'
     ];
 
-    public function classification()
-    {
-        return $this->belongsTo(Classification::class);
-    }
+    // public function classification()
+    // {
+    //     return $this->belongsTo(Sic::class);
+    // }
 
     public function company()
     {
-        return $this->hasOne(Company::class);
+        return $this->hasMany(Company::class);
     }
 }

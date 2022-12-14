@@ -69,17 +69,21 @@ function getFilingsHtmlsUrls(string $cikNumber, string $fillingType, int $fromDa
         return $newResults;
     }
 
-function getFillingsXlsUrls(string $cikNumber, string $fillingType, int $fromDate)
-    {
-        $results = getHtmlDocument($cikNumber, $fillingType, $fromDate);        
-        $results = createCikLinks($results);
-        $dates = getFillingDates($cikNumber, $fillingType, $fromDate);
-        $newResults = [];
 
-        for ($i = 0; $i < count($results); $i++) {
-            $result = getHtmlContent($results[$i]);
-            $result = createXlsLinks($result);
-            $newResults[] = [$dates[$i][0], $result[0]];
-        }
-        return $newResults;
-    }
+/*
+ *THIS HAS BEEN SUBSIDED BY getXlsFillings METHOD
+ */
+// function getFillingsXlsUrls(string $cikNumber, string $fillingType, int $fromDate)
+//     {
+//         $results = extractDOM(getHtmlDocument($cikNumber, $fillingType, $fromDate));
+//         $results = createCikLinks($results);
+//         $dates = getFillingDates($cikNumber, $fillingType, $fromDate);
+//         $newResults = [];
+
+//         for ($i = 0; $i < count($results); $i++) {
+//             $result = getHtmlContent($results[$i]);
+//             $result = createXlsLinks($result);
+//             $newResults[] = [$dates[$i][0], $result[0]];
+//         }
+//         return $newResults;
+//     }
