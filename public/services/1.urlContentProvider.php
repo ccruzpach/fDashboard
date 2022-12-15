@@ -9,7 +9,7 @@ function createSearchUrl(string $cikNumber, string $fillingType, $fromDate = nul
     //owner=include ====> gets forms 3, 4, and 5;
     //datea=$fromDate
 
-    return "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=$cikNumber&type=$fillingType&dateb=&owner=include&count=100&search_text=";
+    return "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=$cikNumber&type=$fillingType&datea=$fromDate&owner=include&count=100&search_text=";
 }
 
 function getHtmlContent(string $url)
