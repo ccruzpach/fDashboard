@@ -6,7 +6,7 @@ function createID($name)
 {
     $name = strtolower($name);
     $name = preg_replace('/\s+/', '_', $name);
-    $name = strtok($name, '-');
+    // $name = strtok($name, '-');
     $name = rtrim($name, '_');
 
     return $name;
@@ -24,8 +24,8 @@ function extractExcelTables(string $path)
             $fillingSection = $xlsx->rows($i);
             $name = $fillingSection[0][0];
             $id = createID($name);
-            $headerOpening = "<h3><strong>";
-            $headerClosing = "</strong></h3>";
+            // $headerOpening = "<h3><strong>";
+            // $headerClosing = "</strong></h3>";
             $tableOpening = "<table id=\"$id\" border=\"1\" cellpadding=\"3\" style=\"border-collapse: collapse\">";
             $tableClosing = "</table>";
 
@@ -35,7 +35,8 @@ function extractExcelTables(string $path)
                 $rows[] = '<tr><td>' . implode('</td><td>', $row) . '</td></tr>';
             }
             $tableString = implode($rows);
-            $tables[] = $headerOpening . $name . $headerClosing . $tableOpening . $tableString . $tableClosing;
+            // $tables[] = $headerOpening . $name . $headerClosing . $tableOpening . $tableString . $tableClosing;
+            $tables[] = $tableOpening . $tableString . $tableClosing;
         }
         return $tables;
     } else {

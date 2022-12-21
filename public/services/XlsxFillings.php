@@ -21,6 +21,7 @@ function getFillingDates(string $cikNumber, string $fillingType, $fromDate)
     return array_slice($fillingList, 5);
 }
 
+//TODO: FINANCIAL FORMS OTHER THAN 10-K/6-K REQUIRE DIFFERENT PREG_MATCH CRITERIA
 function getXlsFillings($cikNumber, $fillingType, $fromDate)
 {
     $content = extractDOM(getHtmlContent(createSearchUrl($cikNumber, $fillingType, $fromDate)));
