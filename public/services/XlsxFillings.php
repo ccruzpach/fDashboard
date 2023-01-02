@@ -33,32 +33,34 @@ function getXlsFillings($cikNumber, $fillingType, $fromDate)
     for ($i = 0; $i < count($results); $i++)
     {
         $link = $results[$i]->getAttribute('href');
+        if (str_contains($link, '/Archives/edgar'))
 
-        if (preg_match('/cik/i', $link) and preg_match('(action=view)', $link))
+        // if (preg_match('/cik/i', $link) and preg_match('(action=view)', $link))
         {
             $link = 'https://www.sec.gov' . $link;
             $link = extractDOM(getHtmlContent($link));
             $link = extracHtmlByTag($link, 'a');
+            // for ($j = 0; $j < count($link); $j++)
+            // {
+            //     $l = $link[$j]->getAttribute('href');
 
-            for ($j = 0; $j < count($link); $j++)
-            {
-                $l = $link[$j]->getAttribute('href');
-
-                (preg_match('(.xls)', $l)) ? $links[] = 'https://www.sec.gov' . $l : '';
-            }
+            //     (preg_match('(.xls)', $l)) ? $links[] = 'https://www.sec.gov' . $l : '';
+            // }
         } 
     }
+    dd($links);
 
-    $modFillingType = str_replace("-", "", $fillingType);
-    $path = storage_path('fillings/') . "$cikNumber/$modFillingType";
-    File::ensureDirectoryExists($path);
 
-    for ($i = 0; $i < count($links); $i++) {
-        $filingDate = str_replace("-", "", $dates[$i][0]);
-        $downloadPath = $path . "/" . $cikNumber . "_" . $modFillingType . "_" . $filingDate . ".xlsx";
+    // $modFillingType = str_replace("-", "", $fillingType);
+    // $path = storage_path('fillings/') . "$cikNumber/$modFillingType";
+    // File::ensureDirectoryExists($path);
 
-        downloadFile($links[$i], $downloadPath);
-    }
+    // for ($i = 0; $i < count($links); $i++) {
+    //     $filingDate = str_replace("-", "", $dates[$i][0]);
+    //     $downloadPath = $path . "/" . $cikNumber . "_" . $modFillingType . "_" . $filingDate . ".xlsx";
+
+    //     downloadFile($links[$i], $downloadPath);
+    // }
     echo "Files successfully saved to disks.";
 }
 

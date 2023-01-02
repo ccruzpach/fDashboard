@@ -3,6 +3,7 @@
 require public_path('/services/CompanyInfoQueries.php');
 require public_path('/services/4.extractEdgarFillingsUrls.php');
 require public_path('/services/XlsxFillingProcessor.php');
+require public_path('/services/XlsxFillings.php');
 
 use App\Models\Cik;
 use App\Models\Sic;
@@ -10,14 +11,57 @@ use App\Models\Industry;
 use App\Models\Sector;
 use App\Models\Company;
 set_time_limit(15000);
+$cikNumber = '320193';
+$content = extractDOM(getHtmlContent(createSearchUrl($cikNumber, '10-K', 20050101)));
+$results = extracHtmlByTag($content, 'a');
 
-$url = "https://www.sec.gov/edgar/search/#/dateRange=custom&category=custom&entityName=0000001800&startdt=2008-12-01&enddt=2022-12-21&forms=10-K";
-$url2 = "https://www.sec.gov/edgar/browse/?CIK=1800&owner=exclude&";
-$url3 = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000001800&type=10-K&datea=20170101&owner=include&count=100&search_text=";
+$links = [];
 
-$processedUrl = "https://www.sec.gov/ix?doc=/Archives/edgar/data/1800/000110465922025141/abt-20211231x10k.htm";
+for ($i = 0; $i < count($results); $i++)
+{
+    $link = $results[$i]->getAttribute('href');
+    if (str_contains($link, '/Archives/edgar'))
+    {
+        $link = 'https://www.sec.gov' . $link;
+        $link = extractDOM(getHtmlContent($link));
+        $link = extracHtmlByTag($link, 'a');
 
-dd(getHtmlContent($processedUrl));
+        $links[] = $link;
+    }
+}
+
+$newLinks = [];
+
+for ($j = 0; $j < count($links); $j++)
+{
+    $tempArray = [];
+    //TODO: Retrieve company symbol from database;
+    $companySymbol = getCompanySymbol($cikNumber);
+    // dd($companySymbol);
+
+    for ($k = 0; $k < count ($links[$j]); $k++)
+    {
+        $l = $links[$j][$k]->getAttribute('href');
+
+        if (str_contains($l, 'aapl'))
+        {
+            $tempArray[] = 'https://www.sec.gov' . $l;
+            break;
+        } 
+        elseif (str_contains($l, 'd10k'))
+        {
+            $tempArray[] = 'https://www.sec.gov' . $l;
+            break;
+        }
+    }
+    $newLinks[] = $tempArray;
+}
+
+dd($newLinks);
+
+
+
+
 
 
 // RULES
