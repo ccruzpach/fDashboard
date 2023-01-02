@@ -10,8 +10,9 @@ use App\Models\Sic;
 use App\Models\Industry;
 use App\Models\Sector;
 use App\Models\Company;
-set_time_limit(15000);
+// set_time_limit(15000);
 $cikNumber = '320193';
+
 $content = extractDOM(getHtmlContent(createSearchUrl($cikNumber, '10-K', 20050101)));
 $results = extracHtmlByTag($content, 'a');
 
@@ -36,14 +37,13 @@ for ($j = 0; $j < count($links); $j++)
 {
     $tempArray = [];
     //TODO: Retrieve company symbol from database;
-    $companySymbol = getCompanySymbol($cikNumber);
-    // dd($companySymbol);
+    $companySymbol = strtolower(getCompanySymbol($cikNumber));
 
     for ($k = 0; $k < count ($links[$j]); $k++)
     {
         $l = $links[$j][$k]->getAttribute('href');
 
-        if (str_contains($l, 'aapl'))
+        if (str_contains($l, $companySymbol))
         {
             $tempArray[] = 'https://www.sec.gov' . $l;
             break;

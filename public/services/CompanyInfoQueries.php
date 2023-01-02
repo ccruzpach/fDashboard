@@ -13,7 +13,8 @@ function getCompanyName($stockSymbol)
 
 function getCompanySymbol($cikNumber)
 {
-   return  Company::where('cik_number', $cikNumber)->get()->first();
+    $cikId = Cik::where('cik_number', $cikNumber)->get()->first()->id;
+    return Company::where('cik_id', $cikId)->get()->first()->stock_symbol;
 }
 
 function getCompanyCIK($stockSymbol)
