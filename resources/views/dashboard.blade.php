@@ -10,8 +10,13 @@ use App\Models\Sic;
 use App\Models\Industry;
 use App\Models\Sector;
 use App\Models\Company;
+
 // set_time_limit(15000);
-$cikNumber = '320193';
+// $cikNumber = '320193';
+// $cikNumber = '2488';
+// $cikNumber = '78003';
+
+$cikNumber = getCompanyCIK('F')->cik_number;
 
 $content = extractDOM(getHtmlContent(createSearchUrl($cikNumber, '10-K', 20050101)));
 $results = extracHtmlByTag($content, 'a');
@@ -19,7 +24,7 @@ $results = extracHtmlByTag($content, 'a');
 $links = [];
 
 for ($i = 0; $i < count($results); $i++)
-{
+{    
     $link = $results[$i]->getAttribute('href');
     if (str_contains($link, '/Archives/edgar'))
     {
@@ -36,66 +41,35 @@ $newLinks = [];
 for ($j = 0; $j < count($links); $j++)
 {
     $tempArray = [];
-    //TODO: Retrieve company symbol from database;
     $companySymbol = strtolower(getCompanySymbol($cikNumber));
 
     for ($k = 0; $k < count ($links[$j]); $k++)
     {
+        //TODO: Remove the 'ix?doc=' to get a non-dynamic version of the filling.
+        //TODO: Make this function work for other fillings, and not just 10ks   
         $l = $links[$j][$k]->getAttribute('href');
 
-        if (str_contains($l, $companySymbol))
+        if (str_contains($l, '/Archives/edgar/'))
         {
-            $tempArray[] = 'https://www.sec.gov' . $l;
-            break;
-        } 
-        elseif (str_contains($l, 'd10k'))
-        {
-            $tempArray[] = 'https://www.sec.gov' . $l;
-            break;
-        }
+            if (str_contains($l, $companySymbol)
+            or
+            (str_contains($l, '10k'))
+            or
+            (str_contains($l, '10-k'))
+            or
+            (str_contains($l, '10k')))
+            {
+                $tempArray[] = 'https://www.sec.gov' . $l;
+                break;
+            }
+        }        
     }
     $newLinks[] = $tempArray;
 }
 
 dd($newLinks);
 
-
-
-
-
-
-// RULES
-// Avoid condensed statements of income as they combined balance sheet, cashflows and income into a single statement.
-// Avoid supplemental information ?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-//Push desired tables to database
-
-
-
-// ?>
+?>
 
 
 
