@@ -1,4 +1,69 @@
 <?php
+//FIXME: MAKE SURE THIS WORKS WITH ANY FILLING, OR WRITE A NEW FUNCTOIN FOR EACH FILLING
+function getFillingDocument(string $cikNumber, string $fillingType, $fromDate)
+{
+    //NOTE: query only necessary if ticker is provided instead of a CIK number.
+    // $cikNumber = getCompanyCIK('AAPL')->cik_number;
+
+    $content = createSearchUrl($cikNumber, $fillingType, $fromDate);
+    $content = getHtmlContent($content);
+    $content = extractDOM($content);
+    $results = extracHtmlByTag($content, 'a');
+
+    $links = [];
+
+    for ($i = 0; $i < count($results); $i++)
+    {    
+        $link = $results[$i]->getAttribute('href');
+        if (str_contains($link, '/Archives/edgar'))
+        {
+            $link = 'https://www.sec.gov' . $link;
+            $link = getHtmlContent($link);
+            $link = extractDOM($link);
+            $link = extracHtmlByTag($link, 'a');
+
+            $links[] = $link;
+        }
+    }
+
+    $newLinks = [];
+
+    for ($j = 0; $j < count($links); $j++)
+    {
+        $tempArray = [];
+        $companySymbol = strtolower(getCompanySymbol($cikNumber));
+
+        for ($k = 0; $k < count ($links[$j]); $k++)
+        {
+            $link = $links[$j][$k]->getAttribute('href');
+
+            if (str_contains($link, '/Archives/edgar/'))
+            {
+                if (str_contains($link, $companySymbol)
+                or
+                (str_contains($link, '10k'))
+                or
+                (str_contains($link, '10-k'))
+                or
+                (str_contains($link, '10k')))
+                {
+                    $link = str_replace('/ix?doc=', '', $link);
+                    $tempArray[] = 'https://www.sec.gov' . $link;
+                    break;
+                }
+            }        
+        }
+        $newLinks[] = $tempArray;
+    }
+    return $newLinks;
+
+}
+
+
+
+
+
+
 
 function getFillingDates(string $cikNumber, string $fillingType, $fromDate)
 {
@@ -77,7 +142,3 @@ function downloadFile($url, $downloadPath, $agent = "Mozilla/5.0 (X11; Linux x86
     curl_close($ch);
     fclose($fp);
 }
-
-
-
-?>

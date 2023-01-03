@@ -3,7 +3,8 @@
 require public_path('/services/CompanyInfoQueries.php');
 require public_path('/services/4.extractEdgarFillingsUrls.php');
 require public_path('/services/XlsxFillingProcessor.php');
-require public_path('/services/XlsxFillings.php');
+require public_path('/services/getSECFillings.php');
+require public_path('/services/FillingListByCompany.php');
 
 use App\Models\Cik;
 use App\Models\Sic;
@@ -11,70 +12,16 @@ use App\Models\Industry;
 use App\Models\Sector;
 use App\Models\Company;
 
-// set_time_limit(15000);
-// $cikNumber = '320193';
-// $cikNumber = '2488';
-// $cikNumber = '78003';
+$cikNumber = getCompanyCIK('CVNA')->cik_number;
 
-$cikNumber = getCompanyCIK('F')->cik_number;
-
-$content = extractDOM(getHtmlContent(createSearchUrl($cikNumber, '10-K', 20050101)));
-$results = extracHtmlByTag($content, 'a');
-
-$links = [];
-
-for ($i = 0; $i < count($results); $i++)
-{    
-    $link = $results[$i]->getAttribute('href');
-    if (str_contains($link, '/Archives/edgar'))
-    {
-        $link = 'https://www.sec.gov' . $link;
-        $link = extractDOM(getHtmlContent($link));
-        $link = extracHtmlByTag($link, 'a');
-
-        $links[] = $link;
-    }
-}
-
-$newLinks = [];
-
-for ($j = 0; $j < count($links); $j++)
-{
-    $tempArray = [];
-    $companySymbol = strtolower(getCompanySymbol($cikNumber));
-
-    for ($k = 0; $k < count ($links[$j]); $k++)
-    {
-        //TODO: Remove the 'ix?doc=' to get a non-dynamic version of the filling.
-        //TODO: Make this function work for other fillings, and not just 10ks   
-        $l = $links[$j][$k]->getAttribute('href');
-
-        if (str_contains($l, '/Archives/edgar/'))
-        {
-            if (str_contains($l, $companySymbol)
-            or
-            (str_contains($l, '10k'))
-            or
-            (str_contains($l, '10-k'))
-            or
-            (str_contains($l, '10k')))
-            {
-                $tempArray[] = 'https://www.sec.gov' . $l;
-                break;
-            }
-        }        
-    }
-    $newLinks[] = $tempArray;
-}
-
-dd($newLinks);
+// dd(getFillingDocument($cikNumber, '10-K', 20050101));
 
 ?>
 
 
 
 
-{{--
+
 <!DOCTYPE html>
 
 <title>Document</title>
@@ -138,5 +85,3 @@ dd($newLinks);
     </div>
 </div>
 </body>
-
---}}
