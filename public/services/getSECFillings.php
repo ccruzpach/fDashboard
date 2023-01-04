@@ -80,7 +80,7 @@ function getFillingDocument(string $cikNumber, string $fillingType, $fromDate)
         }
         $newLinks[] = $tempArray;
     }
-    return array_combine($newLinks, $fillingDates);
+    return array_combine($newLinks, $fillingDates); 
 }
 
 
