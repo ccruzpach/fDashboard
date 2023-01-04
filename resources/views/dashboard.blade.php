@@ -6,15 +6,23 @@ require public_path('/services/XlsxFillingProcessor.php');
 require public_path('/services/getSECFillings.php');
 require public_path('/services/FillingListByCompany.php');
 
+
+//BOBA 4UT (slightly hard, Deep sound, less clacky)
+//Holy Pandas (Softer, more clacky)
+
 use App\Models\Cik;
 use App\Models\Sic;
 use App\Models\Industry;
 use App\Models\Sector;
 use App\Models\Company;
+//"320193" 
+$cikNumber = getCompanyCIK('AAPL')->cik_number;
 
-$cikNumber = getCompanyCIK('CVNA')->cik_number;
 
-// dd(getFillingDocument($cikNumber, '10-K', 20050101));
+dd(getFillingDocument($cikNumber, '10-K', 20050101));
+// dd(getFillingDatesFromFillingsList($cikNumber, '10-K', 20050101));
+// dd(getXlsFillings($cikNumber, '10-K', 20050101));
+
 
 ?>
 
@@ -39,7 +47,14 @@ $cikNumber = getCompanyCIK('CVNA')->cik_number;
     </form>
 
     <?php
-        $companySymbol = strtoupper($_GET['search']);
+        
+        $companySymbol = strtoupper($_GET['search'] ?? null);
+        
+        if (empty($companySymbol))
+        {
+            $companySymbol = 'AAPL';
+        }
+
         $companyCik = getCompanyCIK(strtoupper($companySymbol))->cik_number;
     ?>
 
