@@ -25,9 +25,6 @@ function getFillingDatesFromFillingsList(string $cikNumber, string $fillingType,
 //FIXME: MAKE SURE THIS WORKS WITH ANY FILLING, OR WRITE A NEW FUNCTIN FOR EACH FILLING
 function getFillingDocument(string $cikNumber, string $fillingType, $fromDate)
 {
-    //NOTE: query only necessary if ticker is provided instead of a CIK number.
-    // $cikNumber = getCompanyCIK('AAPL')->cik_number;
-
     $content = createSearchUrl($cikNumber, $fillingType, $fromDate);
     $content = getHtmlContent($content);
     $content = extractDOM($content);
@@ -80,7 +77,7 @@ function getFillingDocument(string $cikNumber, string $fillingType, $fromDate)
         }
         $newLinks[] = $tempArray;
     }
-    return array_combine($newLinks, $fillingDates); 
+    return array_combine($newLinks, $fillingDates);
 }
 
 

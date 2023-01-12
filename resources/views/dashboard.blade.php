@@ -1,15 +1,15 @@
 <?php 
 
-require public_path('/services/CompanyInfoQueries.php');
-require public_path('/services/4.extractEdgarFillingsUrls.php');
-require public_path('/services/XlsxFillingProcessor.php');
-require public_path('/services/getSECFillings.php');
-require public_path('/services/FillingListByCompany.php');
+require_once public_path('/services/CompanyInfoQueries.php');
+require_once public_path('/services/4.extractEdgarFillingsUrls.php');
+require_once public_path('/services/XlsxFillingProcessor.php');
+require_once public_path('/services/getSECFillings.php');
+require_once public_path('/services/FillingListByCompany.php');
 
 
 //BOBA 4UT (slightly hard, Deep sound, less clacky)
 //Holy Pandas (Softer, more clacky)
-
+use App\Models\Filling10k;
 use App\Models\Cik;
 use App\Models\Sic;
 use App\Models\Industry;
@@ -17,18 +17,65 @@ use App\Models\Sector;
 use App\Models\Company;
 //"320193" 
 $cikNumber = getCompanyCIK('AAPL')->cik_number;
-
-
-dd(getFillingDocument($cikNumber, '10-K', 20050101));
+// dd(getFillingDocument($cikNumber, '10-K', 20050101));
 // dd(getFillingDatesFromFillingsList($cikNumber, '10-K', 20050101));
 // dd(getXlsFillings($cikNumber, '10-K', 20050101));
+
+$cikData = DB::select("SELECT id, cik_number FROM ciks");
+$cikNumbers = [];
+
+foreach ($cikData as $cik) 
+{
+
+    // dd(gettype($cik->id), gettype($cik->cik_number));
+    $cikNumbers[] = $cik->cik_number;
+}
+
+file_put_contents('cikNumbers.json', json_encode($cikNumbers));
+echo "All Done"
+
+
+
+
+//TODO: Separate Processes for 10KFillings Table:
+// 1. Grab all links;
+// 2. Grab all content from links;
+// 3. Push content to DB;
+
+
+// Database\Seeders\SectorSeeder ............................................................................................................ RUNNING  
+// Database\Seeders\SectorSeeder ...................................................................................................... 83.89 ms DONE  
+
+// Database\Seeders\IndustrySeeder .......................................................................................................... RUNNING  
+// Database\Seeders\IndustrySeeder ................................................................................................. 1,180.56 ms DONE  
+
+// Database\Seeders\SicSeeder ............................................................................................................... RUNNING  
+// Database\Seeders\SicSeeder ...................................................................................................... 3,260.46 ms DONE  
+
+// Database\Seeders\CikSeeder ............................................................................................................... RUNNING  
+// Database\Seeders\CikSeeder ..................................................................................................... 24,404.33 ms DONE  
+
+// Database\Seeders\CompanySeeder ........................................................................................................... RUNNING  
+// Database\Seeders\CompanySeeder ................................................................................................. 50,902.79 ms DONE  
+
+//ONLY 10 companies used, fillings dating from 2005 => 1.5MB vs 423MB.
+// Database\Seeders\Filling10kSeeder ........................................................................................................ RUNNING  
+// Database\Seeders\Filling10kSeeder ............................................................................................. 279,995.69 ms DONE
+
+
+//ONLY 10 companies, fillings dating from 2015;
+// Database\Seeders\Filling10kSeeder ........................................................................................................ RUNNING  
+// Database\Seeders\Filling10kSeeder ............................................................................................. 371,705.47 ms DONE  
+
+
+
 
 
 ?>
 
 
 
-
+{{--
 
 <!DOCTYPE html>
 
@@ -100,3 +147,4 @@ dd(getFillingDocument($cikNumber, '10-K', 20050101));
     </div>
 </div>
 </body>
+--}}

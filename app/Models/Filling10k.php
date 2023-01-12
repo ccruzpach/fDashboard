@@ -12,9 +12,7 @@ class Filling10k extends Model
     protected $table = 'filling10ks';
 
     protected $fillable = [
-        'income',
-        'cashflows',
-        'balance_sheet',
-        'shareholders_equity'
+      'filling_content',
+      'filling_date'
     ];
 }

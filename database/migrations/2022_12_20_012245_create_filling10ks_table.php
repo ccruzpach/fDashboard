@@ -16,10 +16,8 @@ return new class extends Migration
         Schema::create('filling10ks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cik_id')->constrained('ciks');
-            $table->string('income');
-            $table->string('cashflows');
-            $table->string('balance_sheet');
-            $table->string('shareholders_equity');
+            $table->string('filling_date');
+            $table->string('filling_content');
             $table->timestamps();
         });
     }
